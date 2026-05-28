@@ -2097,107 +2097,616 @@ html, body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-  .sidebar { width: 200px; min-width: 200px; }
-  .nav-item { font-size: 8px; padding: 10px 14px; }
-  .floor-furniture { top: 48px; }
-  .furniture-blackboard { width: 185px; height: 245px; }
-  .furniture-blackboard .blackboard-surface { width: 169px; height: 155px; left: 8px; }
-  .furniture-blackboard::after { top: 145px; height: 100px; left: 22px; width: 8px; }
-  .bb-leg-right { top: 145px; height: 100px; right: 22px; width: 8px; }
-  .bb-topbar { top: 132px; width: 22px; height: 6px; }
-  .bb-crossbar { top: 215px; left: 52px; width: 80px; }
-  .bb-foot-left { left: 16px; width: 11px; height: 7px; }
-  .bb-foot-right { right: 16px; width: 11px; height: 7px; }
-  .bb-paper-1 { width: 65px; height: 38px; top: 10px; left: 8px; font-size: 4.5px; }
-  .bb-paper-2 { width: 60px; height: 34px; top: 14px; right: 8px; font-size: 4.5px; }
-  .bb-paper-3 { width: 78px; height: 36px; bottom: 10px; left: 46px; font-size: 4.5px; }
-  .bb-paper-4 { width: 36px; height: 46px; top: 54px; left: 10px; font-size: 4px; padding: 2px; }
-  .bb-paper-4 .polaroid-image { width: 28px; height: 28px; }
-  .bb-paper-5 { width: 38px; height: 30px; bottom: 50px; right: 10px; font-size: 4px; }
-  .bb-paper-6 { width: 34px; height: 26px; top: 6px; left: 65px; font-size: 4.5px; }
-  .deco-bb-plant { right: -26px; bottom: 0; transform: scale(0.85); transform-origin: bottom right; }
-  .furniture-bookshelf { width: 135px; height: 155px; }
-  .furniture-desk { width: 150px; height: 105px; }
-  .window { width: 90px; height: 90px; right: 20px; top: 45px; border-width: 6px; }
-  .light-beam { width: 280px; height: 360px; right: 25px; top: 45px; }
-  .floor-left { top: 235px; }
-  .floor-right { top: 235px; }
-  .floor-divider { top: 235px; }
-  .deco-sofa { left: 30%; bottom: 15px; font-size: 40px; }
-  .deco-plant { right: 8px; bottom: 8px; font-size: 26px; }
-  .deco-boxes { left: calc(50% + 30px); bottom: 18px; font-size: 20px; }
-  .wall-clock { left: calc(50% - 100px); top: 60px; width: 40px; height: 40px; border-width: 4px; }
-  .wall-clock::before { height: 10px; }
-  .wall-clock::after { height: 14px; }
-  .framed-picture { right: 170px; top: 38px; width: 55px; height: 40px; border-width: 4px; }
-  .center-rug { left: calc(50% - 100px); top: 280px; width: 200px; height: 95px; }
-  .wainscoting { top: 168px; height: 55px; }
-  .baseboard { top: 223px; }
-  .wall-pillar { width: 10px; }
-  .ceiling-lamp { left: calc(50% - 10px); }
-  .ceiling-lamp-shade { border-left-width: 10px; border-right-width: 10px; border-top-width: 14px; top: 32px; }
-  .ceiling-lamp-wire { height: 32px; }
-  .ceiling-lamp-bulb { top: 46px; width: 6px; height: 6px; }
-  .lamp-glow { width: 220px; height: 300px; left: calc(50% - 110px); top: 40px; }
-  .modal-dialog { width: 90vw; }
+/* ============================================================
+   移动端专属组件样式 (Mobile UI Elements)
+   ============================================================ */
+.menu-btn {
+  display: none; /* 默认隐藏，在 768px 以下显示 */
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 30;
+  background: var(--sidebar-bg);
+  border: 3px solid var(--accent-gold);
+  color: var(--accent-gold);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ui-border);
+  align-items: center;
+  gap: 8px;
+  transition: all 0.1s;
+  user-select: none;
 }
-@media (max-width: 600px) {
-  .app-container { flex-direction: column; }
-  .sidebar {
-    width: 100%; min-width: unset;
-    height: auto; max-height: 40vh;
-    border-right: none;
-    border-bottom: 3px solid var(--ui-border);
+.menu-btn:hover {
+  background: var(--sidebar-hover);
+  color: var(--accent-glow);
+  border-color: var(--accent-glow);
+}
+.menu-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ui-border);
+}
+.menu-btn-text {
+  font-family: 'Microsoft YaHei', sans-serif;
+  font-weight: bold;
+}
+
+.sidebar-close-btn {
+  display: none; /* 默认隐藏，在 768px 以下显示 */
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--sidebar-bg);
+  border: 2px solid var(--accent-gold);
+  color: var(--accent-gold);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ui-border);
+  z-index: 10;
+  transition: all 0.1s;
+}
+.sidebar-close-btn:hover {
+  background: #E74C3C;
+  color: white;
+  border-color: #E8C86A;
+}
+.sidebar-close-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--ui-border);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 140;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.sidebar-overlay.open {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  /* 显示移动端按钮 */
+  .menu-btn {
+    display: flex;
   }
-  .scene { height: 60vh; }
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  /* 侧边栏转换为侧滑抽屉 (Sidebar Drawer) */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    min-width: 280px;
+    height: 100vh;
+    z-index: 150;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    border-right: 4px solid var(--ui-border);
+    box-shadow: 4px 0 0 rgba(0,0,0,0.3) inset, -2px 0 0 rgba(255,255,255,0.05) inset;
+    animation: none; /* 禁用初始动画以平滑侧滑 */
+  }
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* 导航项微调 */
+  .nav-item {
+    font-size: 10px;
+    padding: 12px 18px;
+  }
+  
+  /* 场景充满整个视口 */
+  .scene {
+    width: 100%;
+    height: 100vh;
+  }
+
+  /* 场景家具及装饰调整 (768px 以下通用比例) */
+  .floor-furniture {
+    top: 48px;
+    padding: 0 15px 30px;
+  }
+  .furniture-blackboard {
+    width: 185px;
+    height: 245px;
+  }
+  .furniture-blackboard .blackboard-surface {
+    width: 169px;
+    height: 155px;
+    left: 8px;
+  }
+  .furniture-blackboard::after {
+    top: 145px;
+    height: 100px;
+    left: 22px;
+    width: 8px;
+  }
+  .bb-leg-right {
+    top: 145px;
+    height: 100px;
+    right: 22px;
+    width: 8px;
+  }
+  .bb-topbar {
+    top: 132px;
+    width: 22px;
+    height: 6px;
+  }
+  .bb-crossbar {
+    top: 215px;
+    left: 52px;
+    width: 80px;
+  }
+  .bb-foot-left {
+    left: 16px;
+    width: 11px;
+    height: 7px;
+  }
+  .bb-foot-right {
+    right: 16px;
+    width: 11px;
+    height: 7px;
+  }
+  .bb-paper-1 {
+    width: 65px;
+    height: 38px;
+    top: 10px;
+    left: 8px;
+    font-size: 4.5px;
+  }
+  .bb-paper-2 {
+    width: 60px;
+    height: 34px;
+    top: 14px;
+    right: 8px;
+    font-size: 4.5px;
+  }
+  .bb-paper-3 {
+    width: 78px;
+    height: 36px;
+    bottom: 10px;
+    left: 46px;
+    font-size: 4.5px;
+  }
+  .bb-paper-4 {
+    width: 36px;
+    height: 46px;
+    top: 54px;
+    left: 10px;
+    font-size: 4px;
+    padding: 2px;
+  }
+  .bb-paper-4 .polaroid-image {
+    width: 28px;
+    height: 28px;
+  }
+  .bb-paper-5 {
+    width: 38px;
+    height: 30px;
+    bottom: 50px;
+    right: 10px;
+    font-size: 4px;
+  }
+  .bb-paper-6 {
+    width: 34px;
+    height: 26px;
+    top: 6px;
+    left: 65px;
+    font-size: 4.5px;
+  }
+  .deco-bb-plant {
+    right: -26px;
+    bottom: 0;
+    transform: scale(0.85);
+    transform-origin: bottom right;
+  }
+
+  .furniture-bookshelf {
+    width: 135px;
+    height: 155px;
+  }
+  .furniture-desk {
+    width: 150px;
+    height: 105px;
+  }
+
+  .window {
+    width: 90px;
+    height: 90px;
+    right: 20px;
+    top: 45px;
+    border-width: 6px;
+  }
+  .light-beam {
+    width: 280px;
+    height: 360px;
+    right: 25px;
+    top: 45px;
+  }
+
+  .floor-left {
+    top: 235px;
+  }
+  .floor-right {
+    top: 235px;
+  }
+  .floor-divider {
+    top: 235px;
+  }
+
+  .deco-sofa {
+    left: 30%;
+    bottom: 15px;
+    font-size: 40px;
+  }
+  .deco-plant {
+    right: 8px;
+    bottom: 8px;
+    font-size: 26px;
+  }
+  .deco-boxes {
+    left: calc(50% + 30px);
+    bottom: 18px;
+    font-size: 20px;
+  }
+
+  .wall-clock {
+    left: calc(50% - 100px);
+    top: 60px;
+    width: 40px;
+    height: 40px;
+    border-width: 4px;
+  }
+  .wall-clock::before {
+    height: 10px;
+  }
+  .wall-clock::after {
+    height: 14px;
+  }
+
+  .framed-picture {
+    right: 170px;
+    top: 38px;
+    width: 55px;
+    height: 40px;
+    border-width: 4px;
+  }
+
+  .center-rug {
+    left: calc(50% - 100px);
+    top: 280px;
+    width: 200px;
+    height: 95px;
+  }
+
+  .wainscoting {
+    top: 168px;
+    height: 55px;
+  }
+  .baseboard {
+    top: 223px;
+  }
+  .wall-pillar {
+    width: 10px;
+  }
+
+  .ceiling-lamp {
+    left: calc(50% - 10px);
+  }
+  .ceiling-lamp-shade {
+    border-left-width: 10px;
+    border-right-width: 10px;
+    border-top-width: 14px;
+    top: 32px;
+  }
+  .ceiling-lamp-wire {
+    height: 32px;
+  }
+  .ceiling-lamp-bulb {
+    top: 46px;
+    width: 6px;
+    height: 6px;
+  }
+  .lamp-glow {
+    width: 220px;
+    height: 300px;
+    left: calc(50% - 110px);
+    top: 40px;
+  }
+
+  /* 弹窗调整 */
+  .modal-dialog {
+    width: 92vw;
+    max-height: 85vh;
+  }
+  .modal-content {
+    padding: 16px 20px;
+  }
+}
+
+/* ============================================================
+   更小屏幕适配 (Mobile Small, e.g., <= 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  /* 进一步缩小家具与装饰，以在超窄屏幕上完美并排显示，保留精致画风 */
   .floor-furniture {
     top: 40px;
     padding: 0 10px 20px;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
-    grid-template-areas:
-      "blackboard"
-      "bookshelf"
-      "mailbox";
   }
-  .furniture-blackboard { width: 130px; height: 175px; }
-  .furniture-bookshelf { width: 85px; height: 120px; border-width: 5px; justify-self: start; }
-  .furniture-desk { width: 120px; height: 85px; }
-  .furniture-blackboard .blackboard-surface { width: 118px; height: 108px; left: 6px; border-width: 3px; }
-  .furniture-blackboard::after { top: 102px; height: 73px; left: 16px; width: 6px; }
-  .bb-leg-right { top: 102px; height: 73px; right: 16px; width: 6px; }
-  .bb-topbar { top: 92px; width: 16px; height: 5px; }
-  .bb-crossbar { top: 152px; left: 36px; width: 58px; height: 4px; }
-  .bb-foot-left { left: 10px; width: 8px; height: 5px; }
-  .bb-foot-right { right: 10px; width: 8px; height: 5px; }
-  .bb-paper-1 { width: 44px; height: 26px; top: 6px; left: 5px; font-size: 4px; }
-  .bb-paper-2 { width: 40px; height: 24px; top: 9px; right: 5px; font-size: 4px; }
-  .bb-paper-3 { width: 46px; height: 22px; bottom: 5px; left: 28px; font-size: 4px; }
-  .bb-paper-4 { display: none; }
-  .bb-paper-5 { display: none; }
-  .bb-paper-6 { display: none; }
-  .deco-bb-plant { display: none; }
-  .window { width: 65px; height: 65px; right: 10px; top: 30px; border-width: 5px; display: none; }
-  .light-beam { width: 180px; height: 250px; right: 15px; top: 32px; }
-  .floor-left { top: 175px; }
-  .floor-right { top: 175px; }
-  .floor-divider { top: 175px; }
-  .bookshelf-shelf { gap: 2px; }
-  .book { width: 6px; }
-  .deco-sofa { display: none; }
-  .deco-plant { right: 5px; bottom: 5px; font-size: 20px; }
-  .deco-boxes { left: calc(50% + 15px); bottom: 8px; font-size: 16px; }
-  .wall-clock { left: calc(50% - 60px); top: 40px; width: 30px; height: 30px; border-width: 3px; display: none; }
-  .framed-picture { right: 120px; top: 28px; width: 40px; height: 30px; border-width: 3px; display: none; }
-  .center-rug { left: calc(50% - 60px); top: 210px; width: 120px; height: 60px; }
-  .wainscoting { top: 140px; height: 30px; display: none; }
-  .baseboard { top: 170px; display: none; }
-  .wall-pillar { display: none; }
-  .ceiling-lamp { left: calc(50% - 8px); display: none; }
-  .lamp-glow { display: none; }
-  .desk-monitor { width: 40px; height: 28px; font-size: 14px; }
-  .desk-item { width: 28px; height: 24px; font-size: 12px; }
+  
+  .furniture-blackboard {
+    width: 130px;
+    height: 175px;
+  }
+  .furniture-blackboard .blackboard-surface {
+    width: 118px;
+    height: 108px;
+    left: 6px;
+    border-width: 3px;
+  }
+  .furniture-blackboard::after {
+    top: 102px;
+    height: 73px;
+    left: 16px;
+    width: 6px;
+  }
+  .bb-leg-right {
+    top: 102px;
+    height: 73px;
+    right: 16px;
+    width: 6px;
+  }
+  .bb-topbar {
+    top: 92px;
+    width: 16px;
+    height: 5px;
+  }
+  .bb-crossbar {
+    top: 152px;
+    left: 36px;
+    width: 58px;
+    height: 4px;
+  }
+  .bb-foot-left {
+    left: 10px;
+    width: 8px;
+    height: 5px;
+  }
+  .bb-foot-right {
+    right: 10px;
+    width: 8px;
+    height: 5px;
+  }
+  
+  /* 隐藏黑板上部分细小纸片，避免文字拥挤 */
+  .bb-paper-1 {
+    width: 44px;
+    height: 26px;
+    top: 6px;
+    left: 5px;
+    font-size: 4px;
+  }
+  .bb-paper-2 {
+    width: 40px;
+    height: 24px;
+    top: 9px;
+    right: 5px;
+    font-size: 4px;
+  }
+  .bb-paper-3 {
+    width: 46px;
+    height: 22px;
+    bottom: 5px;
+    left: 28px;
+    font-size: 4px;
+  }
+  .bb-paper-4, .bb-paper-5, .bb-paper-6, .deco-bb-plant {
+    display: none;
+  }
+
+  .furniture-bookshelf {
+    width: 95px;
+    height: 135px;
+    border-width: 5px;
+    justify-self: end;
+    margin-top: 30px;
+  }
+  .bookshelf-label {
+    font-size: 6px;
+    padding: 4px 0 2px;
+  }
+  .bookshelf-interior {
+    gap: 3px;
+    padding: 2px 4px 4px;
+  }
+  .book {
+    width: 6px;
+  }
+
+  .furniture-desk {
+    width: 110px;
+    height: 85px;
+  }
+  .desk-surface {
+    top: 4px;
+    left: 12px;
+    width: 86px;
+    height: 48px;
+    border-width: 2px;
+  }
+  .desk-surface::before {
+    top: 18px;
+    width: 50px;
+    height: 6px;
+    border-width: 1px;
+  }
+  .desk-surface::after {
+    width: 14px;
+    height: 10px;
+    right: -4px;
+    top: -2px;
+    border-width: 1px;
+  }
+  .desk-top {
+    top: 28px;
+    width: 60px;
+  }
+  .desk-monitor {
+    width: 48px;
+    height: 12px;
+    font-size: 6px;
+    border-width: 1px;
+  }
+  .desk-footer {
+    bottom: 8px;
+    width: 44px;
+    height: 12px;
+    border-width: 1px;
+  }
+  .desk-footer span {
+    font-size: 5px;
+  }
+
+  /* 保持背景元素显示但缩小 */
+  .window {
+    width: 65px;
+    height: 65px;
+    right: 15px;
+    top: 35px;
+    border-width: 5px;
+  }
+  
+  /* 地板高度调整 */
+  .floor-left { top: 185px; }
+  .floor-right { top: 185px; }
+  .floor-divider { top: 185px; }
+  
+  /* 墙板与踢脚线 */
+  .wainscoting {
+    top: 130px;
+    height: 55px;
+  }
+  .baseboard {
+    top: 175px;
+  }
+
+  /* 缩小装饰，避免拥护 */
+  .deco-sofa {
+    left: 42%;
+    bottom: 10px;
+    font-size: 28px;
+  }
+  .deco-plant {
+    right: 5px;
+    bottom: 5px;
+    font-size: 18px;
+  }
+  .deco-boxes {
+    left: calc(50% + 10px);
+    bottom: 5px;
+    font-size: 14px;
+  }
+  
+  .wall-clock {
+    left: calc(50% - 70px);
+    top: 50px;
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+  .wall-clock::before { height: 8px; }
+  .wall-clock::after { height: 11px; }
+  
+  .framed-picture {
+    right: 110px;
+    top: 35px;
+    width: 45px;
+    height: 32px;
+    border-width: 3px;
+  }
+  
+  .center-rug {
+    left: calc(50% - 70px);
+    top: 215px;
+    width: 140px;
+    height: 65px;
+  }
+
+  /* 顶灯 */
+  .ceiling-lamp-wire { height: 24px; }
+  .ceiling-lamp-shade {
+    border-left-width: 8px;
+    border-right-width: 8px;
+    border-top-width: 12px;
+    top: 24px;
+  }
+  .ceiling-lamp-bulb { top: 36px; width: 5px; height: 5px; }
+  .lamp-glow {
+    width: 160px;
+    height: 240px;
+    left: calc(50% - 80px);
+    top: 30px;
+  }
+
+  /* 模态框字体和内边距深度优化 */
+  .modal-content {
+    padding: 12px 14px;
+    font-size: 12px;
+  }
+  .modal-content h3 {
+    font-size: 10px;
+    margin: 12px 0 6px;
+  }
+  .modal-content .job-entry,
+  .modal-content .project-card,
+  .modal-content .paper-entry {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+  .modal-content .job-title {
+    font-size: 12px;
+  }
+  .modal-content .job-meta {
+    font-size: 10px;
+  }
+  .modal-content .job-desc {
+    font-size: 11px;
+  }
+  .skills-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 6px;
+  }
+  .skill-tag {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+  .contact-link {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+  .contact-link i {
+    font-size: 16px;
+  }
 }
 </style>
 </head>
@@ -2208,6 +2717,9 @@ html, body {
        左侧栏 — RPG 状态菜单
        ========================================================== -->
   <aside class="sidebar" role="navigation" aria-label="RPG 菜单">
+    <!-- 移动端关闭按钮 -->
+    <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="关闭菜单">✕</button>
+
     <!-- 角色状态区 -->
     <div class="status-section">
       <div class="pixel-avatar" aria-label="像素头像"></div>
@@ -2277,11 +2789,20 @@ html, body {
       <span lang="zh">🔮 点击菜单 · 角色移动至家具前</span>
     </div>
   </aside>
+  <!-- 移动端侧边栏遮罩层 -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
 
   <!-- ==========================================================
        右侧主场景 — 像素房间
        ========================================================== -->
   <main class="scene" id="scene">
+    <!-- 移动端菜单按钮 -->
+    <button class="menu-btn" id="menu-btn" aria-label="打开菜单">
+      <span class="menu-btn-icon">☰</span>
+      <span class="menu-btn-text" lang="zh">菜单</span>
+    </button>
+
     <div class="scene-wall-top"></div>
 
     <div class="wall-pillar left"></div>
@@ -2501,7 +3022,43 @@ html, body {
   const menuItems     = document.querySelectorAll('.nav-menu > .nav-item, .submenu .nav-item');
   const submenuParent = document.querySelector('.nav-item.has-submenu');
   const submenu       = document.querySelector('.submenu');
-  const submenuArrow  = document.querySelector('.submenu-arrow');
+    const submenuArrow  = document.querySelector('.submenu-arrow');
+
+  // 移动端侧边栏 Drawer 所需变量
+  const menuBtn       = document.getElementById('menu-btn');
+  const sidebar       = document.querySelector('.sidebar');
+  const sidebarCloseBtn = document.getElementById('sidebar-close-btn');
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+  function openSidebar() {
+    if (sidebar) sidebar.classList.add('open');
+    if (sidebarOverlay) sidebarOverlay.classList.add('open');
+  }
+
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    if (sidebarOverlay) sidebarOverlay.classList.remove('open');
+  }
+
+  if (menuBtn) {
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      openSidebar();
+    });
+  }
+
+  if (sidebarCloseBtn) {
+    sidebarCloseBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      closeSidebar();
+    });
+  }
+
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', function(e) {
+      closeSidebar();
+    });
+  }
 
   let furniturePositions = {};
   let sceneRectCache = {};
@@ -2540,7 +3097,7 @@ html, body {
 
     furniturePositions.center = {
       x: sr.width / 2 - avatarW / 2,
-      y: sr.height / 2 + 50
+      y: (document.querySelector('.floor-left') ? document.querySelector('.floor-left').offsetTop : 280) + 30
     };
   }
 
@@ -2919,6 +3476,9 @@ html, body {
     isMovingVertical = false;
     isAnimating = false;
     avatar.classList.remove('walking-horizontal', 'walking-vertical');
+
+    // 移动端：选择菜单后自动关闭侧滑抽屉
+    closeSidebar();
     avatar.classList.add('idle');
     avatar.style.transition = 'left 0.6s ease-in-out, top 0.5s ease-in-out';
   }
@@ -3057,6 +3617,7 @@ html, body {
   }
 
   function handleMenuClick(item) {
+    closeSidebar();
     if (isAnimating) return;
     if (item.classList.contains('has-submenu')) return;
 
@@ -3137,7 +3698,8 @@ html, body {
     var clickX = e.clientX - sr.left;
     var clickY = e.clientY - sr.top;
     var avatarW = 48, avatarH = 64;
-    var walkableTop = 285;
+    var floorEl = document.querySelector('.floor-left');
+    var walkableTop = floorEl ? floorEl.offsetTop + 5 : 285;
     var targetX = Math.max(0, Math.min(sr.width - avatarW, clickX - avatarW / 2));
     var targetY = Math.max(walkableTop, Math.min(sr.height - avatarH, clickY - avatarH / 2));
     pendingOpenTarget = null;
@@ -3192,5 +3754,6 @@ html, body {
 })();
 </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0261de5ff6609e4',t:'MTc3OTg5NjQxMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
