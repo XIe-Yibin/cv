@@ -1,0 +1,3196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>谢奕彬 - RPG 像素简历</title>
+<!-- 字体：Press Start 2P 像素字体 + Font Awesome 图标库 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ============================================================
+   CSS 变量 — 暖色调复古像素风配色
+   ============================================================ */
+:root {
+  --wood-dark:   #5C3A21;
+  --wood-mid:    #8B5E3C;
+  --wood-light:  #A87B51;
+  --wood-plank:  #4A2F1A;
+  --sidebar-bg:   #2A1A0E;
+  --sidebar-hover:#3D2817;
+  --sidebar-active:#4A3520;
+  --text-cream:  #F5E6C8;
+  --text-cream-dim: #C8B89A;
+  --accent-gold: #D4A84B;
+  --accent-glow: #E8C86A;
+  --ui-border:   #1A0E08;
+  --modal-bg:    #3D2817;
+  --overlay-bg:  rgba(0,0,0,0.65);
+  --avatar-body: #4A90D9;
+  --avatar-skin: #FFDAB9;
+  --blackboard-green: #2F4F3A;
+  --bookshelf-wood: #3D2817;
+  --carpet-blue: #1B3A5C;
+  --carpet-blue-trim: #2A5080;
+  --carpet-red: #8B1A1A;
+  --carpet-red-trim: #B84444;
+  --window-glass: rgba(180, 220, 255, 0.2);
+  /* ---- 新增：墙壁 & 地板分区颜色 ---- */
+  --wall-cream:     #EDE0C8;
+  --wall-light:     #F5ECD6;
+  --wall-shadow:    #D4C5A9;
+  --wainscot-dark:  #4A3520;
+  --wainscot-mid:   #6B4226;
+  --floor-dark:     #4A2F1A;
+  --floor-dark2:    #5C3A21;
+  --floor-dark3:    #3D2817;
+  --stone-light:    #9E9E9E;
+  --stone-mid:      #8A8A8A;
+  --stone-dark:     #7A7A7A;
+  --stone-line:     #6A6A6A;
+  --rug-burgundy:   #6B2D3E;
+  --rug-gold:       #B88950;
+  --cork-beige:     #D4C5A9;
+  --pin-red:        #E74C3C;
+  --pin-blue:       #3498DB;
+}
+
+/* ============================================================
+   基础重置
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #1A0E08;
+  font-family: 'Press Start 2P', monospace;
+  color: var(--text-cream);
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
+}
+/* 中文字体回退 — Press Start 2P 不支持中文 */
+*:lang(zh), .chinese-fallback {
+  font-family: 'Microsoft YaHei', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  font-weight: 700;
+}
+
+/* ============================================================
+   整体布局：左侧栏 + 右侧场景（Flexbox）
+   ============================================================ */
+.app-container {
+  display: flex;
+  width: 100vw; height: 100vh;
+  position: relative;
+}
+
+/* ============================================================
+   左侧栏 — RPG 状态菜单（250px 固定宽）
+   ============================================================ */
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  height: 100vh;
+  background: var(--sidebar-bg);
+  border-right: 4px solid var(--ui-border);
+  box-shadow: 4px 0 0 rgba(0,0,0,0.3) inset, -2px 0 0 rgba(255,255,255,0.05) inset;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  z-index: 20;
+  animation: slideInLeft 0.5s ease-out;
+}
+/* 像素纹理 overlay 模拟皮革质感 */
+.sidebar::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent, transparent 2px,
+    rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- 角色状态区域 --- */
+.status-section {
+  padding: 24px 18px 18px;
+  border-bottom: 3px solid var(--ui-border);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+/* 像素头像 — 纯 box-shadow 绘制 8x8 风格头像 */
+.pixel-avatar {
+  width: 80px; height: 80px;
+  margin: 0 auto 12px;
+  transform: scale(1.25);
+  transform-origin: top center;
+  position: relative;
+  image-rendering: pixelated;
+  background: var(--avatar-skin);
+  box-shadow:
+    /* 头发 - 深棕 */
+    8px 0 0 0 #4A2F1A, 16px 0 0 0 #4A2F1A, 24px 0 0 0 #4A2F1A,
+    4px 8px 0 0 #4A2F1A, 12px 8px 0 0 #4A2F1A, 20px 8px 0 0 #4A2F1A, 28px 8px 0 0 #4A2F1A,
+    /* 眼睛 */
+    8px 24px 0 0 #1A0E08, 20px 24px 0 0 #1A0E08,
+    /* 脸颊 */
+    4px 32px 0 0 var(--avatar-skin), 8px 32px 0 0 var(--avatar-skin),
+    12px 32px 0 0 var(--avatar-skin), 16px 32px 0 0 var(--avatar-skin),
+    20px 32px 0 0 var(--avatar-skin), 24px 32px 0 0 var(--avatar-skin),
+    /* 身体 - 蓝色衣服 */
+    4px 40px 0 0 var(--avatar-body), 8px 40px 0 0 var(--avatar-body),
+    12px 40px 0 0 var(--avatar-body), 16px 40px 0 0 var(--avatar-body),
+    20px 40px 0 0 var(--avatar-body), 24px 40px 0 0 var(--avatar-body),
+    4px 48px 0 0 var(--avatar-body), 8px 48px 0 0 var(--avatar-body),
+    12px 48px 0 0 var(--avatar-body), 16px 48px 0 0 var(--avatar-body),
+    20px 48px 0 0 var(--avatar-body), 24px 48px 0 0 var(--avatar-body),
+    /* 腿 - 深色 */
+    8px 56px 0 0 #2A1A0E, 12px 56px 0 0 #2A1A0E,
+    16px 56px 0 0 #2A1A0E, 20px 56px 0 0 #2A1A0E;
+}
+.avatar-name {
+  font-size: 14px;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 var(--ui-border);
+  margin-bottom: 4px;
+}
+.avatar-title {
+  font-size: 9px;
+  color: var(--text-cream-dim);
+  font-family: 'Microsoft YaHei', sans-serif;
+}
+.avatar-hp-bar {
+  margin-top: 10px;
+  height: 8px;
+  background: #1A0E08;
+  border: 2px solid var(--ui-border);
+  position: relative;
+}
+.avatar-hp-fill {
+  height: 100%;
+  width: 85%;
+  background: linear-gradient(90deg, #E74C3C, #E8C86A);
+  transition: width 0.3s;
+}
+.avatar-hp-label {
+  font-size: 8px;
+  color: var(--text-cream-dim);
+  margin-top: 3px;
+  display: block;
+}
+
+/* --- 导航菜单 --- */
+.nav-menu {
+  flex: 1;
+  padding: 12px 0;
+  position: relative;
+  z-index: 1;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='2' y='2' width='12' height='12' fill='%23D4A84B'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23F5E6C8'/%3E%3C/svg%3E") 4 4, pointer;
+  font-size: 11px;
+  color: var(--text-cream);
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  position: relative;
+  user-select: none;
+  opacity: 0;
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+.nav-item:nth-child(1) { animation-delay: 0.1s; }
+.nav-item:nth-child(2) { animation-delay: 0.2s; }
+.nav-item:nth-child(3) { animation-delay: 0.3s; }
+.nav-item:nth-child(4) { animation-delay: 0.4s; }
+.submenu .nav-item:nth-child(1) { animation-delay: 0.35s; }
+.submenu .nav-item:nth-child(2) { animation-delay: 0.4s; }
+.nav-item:hover {
+  background: var(--sidebar-hover);
+  border-left-color: var(--accent-gold);
+}
+.nav-item.active {
+  background: var(--sidebar-active);
+  border-left-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.nav-item.active::after {
+  content: '▶';
+  position: absolute;
+  right: 12px;
+  font-size: 7px;
+  color: var(--accent-gold);
+  animation: navPulse 1s infinite;
+}
+@keyframes navPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.nav-item .nav-icon {
+  width: 28px;
+  text-align: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+/* 子菜单 (Projects 展开项) */
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease;
+  background: rgba(0,0,0,0.2);
+}
+.submenu.open {
+  max-height: 360px;
+}
+.submenu .nav-item {
+  padding-left: 48px;
+  font-size: 10px;
+}
+.submenu .nav-item::before {
+  content: '└─ ';
+  color: var(--accent-gold);
+  font-size: 8px;
+}
+/* 底部版本信息 */
+.sidebar-footer {
+  padding: 14px 18px;
+  border-top: 2px solid var(--ui-border);
+  font-size: 8px;
+  color: var(--text-cream-dim);
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
+   右侧主场景 — 像素房间
+   ============================================================ */
+.scene {
+  flex: 1;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='22'%3E%3Crect x='6' y='0' width='8' height='8' fill='%23D4A84B'/%3E%3Cpolygon points='6,8 14,8 16,20 10,22 4,20' fill='%23D4A84B'/%3E%3Crect x='8' y='2' width='4' height='4' fill='%23F5E6C8'/%3E%3C/svg%3E") 10 4, pointer;
+  animation: sceneAppear 0.6s ease-out;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 3px,
+      rgba(0,0,0,0.015) 3px, rgba(0,0,0,0.015) 4px,
+      transparent 4px, transparent 8px,
+      rgba(0,0,0,0.008) 8px, rgba(0,0,0,0.008) 9px
+    ),
+    linear-gradient(
+      180deg,
+      var(--wall-light) 0%,
+      var(--wall-cream) 40%,
+      var(--wall-shadow) 100%
+    );
+}
+
+.scene::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-conic-gradient(
+    rgba(0,0,0,0.03) 0% 25%, transparent 0% 50%
+  ) 0 0 / 4px 4px;
+  pointer-events: none;
+  z-index: 2;
+}
+.scene::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    transparent 45%,
+    rgba(0,0,0,0.3) 85%,
+    rgba(0,0,0,0.5) 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.scene-wall-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 24px;
+  background: linear-gradient(180deg, var(--wall-light), var(--wall-cream));
+  border-bottom: 3px solid var(--accent-gold);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  z-index: 0;
+}
+
+.floor-left {
+  position: absolute;
+  left: 0;
+  top: 280px;
+  width: calc(50% + 20px);
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 5px,
+      rgba(0,0,0,0.04) 5px, rgba(0,0,0,0.04) 6px,
+      transparent 6px, transparent 14px,
+      rgba(0,0,0,0.025) 14px, rgba(0,0,0,0.025) 15px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 47px,
+      rgba(0,0,0,0.25) 47px, rgba(0,0,0,0.35) 48px,
+      transparent 48px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--floor-dark) 0px, var(--floor-dark) 48px,
+      var(--floor-dark2) 48px, var(--floor-dark2) 96px,
+      var(--floor-dark3) 96px, var(--floor-dark3) 144px,
+      var(--floor-dark) 144px, var(--floor-dark) 192px,
+      var(--floor-dark2) 192px, var(--floor-dark2) 240px
+    );
+  z-index: 1;
+  border-right: 3px solid var(--ui-border);
+}
+
+.floor-right {
+  position: absolute;
+  right: 0;
+  top: 280px;
+  width: calc(50% + 20px);
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 59px,
+      var(--stone-line) 59px, var(--stone-line) 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 59px,
+      var(--stone-line) 59px, var(--stone-line) 60px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--stone-light) 0px, var(--stone-light) 30px,
+      var(--stone-mid) 30px, var(--stone-mid) 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      var(--stone-light) 0px, var(--stone-light) 30px,
+      var(--stone-mid) 30px, var(--stone-mid) 60px
+    );
+  z-index: 1;
+  border-left: 3px solid var(--ui-border);
+  background-blend-mode: overlay, normal, normal, normal;
+}
+
+.floor-divider {
+  position: absolute;
+  left: calc(50% - 2px);
+  top: 280px;
+  width: 4px;
+  bottom: 0;
+  background: linear-gradient(180deg, #A87B51, #8B5E3C, #6B4226);
+  border-left: 1px solid rgba(0,0,0,0.3);
+  border-right: 1px solid rgba(255,255,255,0.1);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.wall-pillar {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #4A2F1A 0px, #4A2F1A 2px,
+      #5C3A21 2px, #5C3A21 10px,
+      #3D2817 10px, #3D2817 14px
+    );
+  box-shadow: 3px 0 6px rgba(0,0,0,0.15);
+}
+.wall-pillar.left {
+  left: 0;
+}
+.wall-pillar.right {
+  right: 0;
+  box-shadow: -3px 0 6px rgba(0,0,0,0.15);
+}
+
+.wainscoting {
+  position: absolute;
+  left: 0;
+  top: 205px;
+  width: 100%;
+  height: 65px;
+  background: linear-gradient(180deg, var(--wainscot-mid), var(--wainscot-dark));
+  border-top: 3px solid #8B5E3C;
+  border-bottom: 4px solid #2A1A0E;
+  z-index: 1;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 39px,
+      rgba(0,0,0,0.2) 39px, rgba(0,0,0,0.25) 40px,
+      transparent 40px, transparent 79px,
+      rgba(255,255,255,0.03) 79px, rgba(255,255,255,0.03) 80px,
+      transparent 80px, transparent 119px,
+      rgba(0,0,0,0.2) 119px, rgba(0,0,0,0.25) 120px,
+      transparent 120px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 30px,
+      rgba(0,0,0,0.1) 30px, rgba(0,0,0,0.15) 31px,
+      transparent 31px, transparent 65px
+    );
+  pointer-events: none;
+}
+
+.baseboard {
+  position: absolute;
+  left: 0;
+  top: 270px;
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(180deg, var(--wainscot-mid), var(--wainscot-dark));
+  border-top: 3px solid #A87B51;
+  border-bottom: 3px solid #1A0E08;
+  z-index: 1;
+  box-shadow: 0 3px 4px rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+.wall-clock {
+  position: absolute;
+  left: calc(50% - 120px);
+  top: 75px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #F5E6C8, #C8B89A);
+  border: 5px solid #8B5E3C;
+  box-shadow:
+    0 2px 8px rgba(0,0,0,0.3),
+    inset 0 2px 4px rgba(255,255,255,0.3),
+    inset 0 -2px 4px rgba(0,0,0,0.1);
+  z-index: 5;
+  background-image:
+    radial-gradient(circle at 50% 12%, #1A0E08 1px, transparent 1px),
+    radial-gradient(circle at 88% 50%, #1A0E08 1px, transparent 1px),
+    radial-gradient(circle at 50% 88%, #1A0E08 1px, transparent 1px),
+    radial-gradient(circle at 12% 50%, #1A0E08 1px, transparent 1px);
+}
+.wall-clock::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 14px;
+  background: #1A0E08;
+  transform: translate(-50%, -100%) rotate(-30deg);
+  border-radius: 1px;
+  transform-origin: bottom center;
+}
+.wall-clock::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 20px;
+  background: #3D2817;
+  transform: translate(-50%, -100%) rotate(15deg);
+  border-radius: 1px;
+  transform-origin: bottom center;
+}
+.wall-clock-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #D4A84B;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  box-shadow: 0 0 2px rgba(0,0,0,0.3);
+}
+
+.ceiling-lamp {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 12px);
+  width: 24px;
+  z-index: 6;
+  pointer-events: none;
+}
+.ceiling-lamp-wire {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 40px;
+  background: #1A0E08;
+  transform: translateX(-50%);
+}
+.ceiling-lamp-shade {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 14px solid transparent;
+  border-right: 14px solid transparent;
+  border-top: 20px solid #D4A84B;
+  filter: drop-shadow(0 2px 4px rgba(212,168,75,0.4));
+}
+.ceiling-lamp-bulb {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #FFF8DC;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 6px rgba(255,250,210,0.3);
+  animation: lampFlicker 4s ease-in-out infinite;
+}
+@keyframes lampFlicker {
+  0%, 100% { opacity: 0.8; box-shadow: 0 0 12px 6px rgba(255,250,210,0.3); }
+  50% { opacity: 1; box-shadow: 0 0 18px 10px rgba(255,250,210,0.4); }
+}
+.lamp-glow {
+  position: absolute;
+  top: 52px;
+  left: calc(50% - 180px);
+  width: 360px;
+  height: 460px;
+  background: radial-gradient(
+    ellipse at 50% 100%,
+    rgba(255,220,130,0.45) 0%,
+    rgba(255,210,110,0.30) 25%,
+    rgba(255,200,90,0.16) 50%,
+    rgba(255,190,80,0.06) 75%,
+    transparent 100%
+  );
+  clip-path: polygon(50% 0, 0% 100%, 100% 100%);
+  pointer-events: none;
+  z-index: 6;
+  mix-blend-mode: screen;
+  animation: lampFlicker 4s ease-in-out infinite;
+}
+
+.framed-picture {
+  position: absolute;
+  right: 210px;
+  top: 45px;
+  width: 70px;
+  height: 50px;
+  z-index: 5;
+  border: 6px solid #C49A6C;
+  border-style: outset;
+  border-color: #D4A84B #B88950 #A07840 #C49A6C;
+  box-shadow:
+    2px 2px 6px rgba(0,0,0,0.3),
+    inset 0 0 0 2px rgba(255,255,255,0.08);
+  background:
+    linear-gradient(
+      180deg,
+      #FF6B6B 0%,
+      #FFA94D 40%,
+      #FFD93D 70%,
+      #6C5CE7 71%,
+      #4A3F8A 100%
+    );
+}
+.framed-picture::before {
+  content: '◆';
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  font-size: 6px;
+  color: var(--accent-gold);
+  opacity: 0.3;
+}
+.framed-picture::after {
+  content: '◆';
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  font-size: 6px;
+  color: var(--accent-gold);
+  opacity: 0.3;
+}
+
+.center-rug {
+  position: absolute;
+  left: calc(50% - 140px);
+  top: 330px;
+  width: 280px;
+  height: 130px;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(
+      rgba(255,255,255,0.04) 0% 25%, transparent 0% 50%
+    ) 0 0 / 12px 12px,
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 5px,
+      rgba(255,215,160,0.04) 5px, rgba(255,215,160,0.04) 6px,
+      transparent 6px, transparent 11px,
+      rgba(0,0,0,0.04) 11px, rgba(0,0,0,0.04) 12px
+    ),
+    radial-gradient(
+      ellipse at 50% 50%,
+      var(--rug-burgundy) 0%,
+      #5A2030 60%,
+      #3D1520 100%
+    );
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.3),
+    inset 0 0 30px rgba(0,0,0,0.15);
+  z-index: 2;
+  border: 3px solid var(--rug-gold);
+}
+.center-rug::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  border: 2px solid rgba(212,168,75,0.2);
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px, transparent 6px,
+      rgba(212,168,75,0.03) 6px, rgba(212,168,75,0.03) 7px,
+      transparent 7px, transparent 13px,
+      rgba(212,168,75,0.03) 13px, rgba(212,168,75,0.03) 14px
+    );
+}
+.center-rug::after {
+  content: '';
+  position: absolute;
+  inset: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(212,168,75,0.08) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.window {
+  position: absolute;
+  right: 40px;
+  top: 60px;
+  width: 140px;
+  height: 130px;
+  z-index: 5;
+  border: 10px solid #5C3A21;
+  border-radius: 4px;
+  box-shadow:
+    2px 2px 0 rgba(0,0,0,0.4),
+    inset 0 0 0 2px rgba(255,255,255,0.08),
+    inset 0 0 15px rgba(0,0,0,0.2);
+  background: var(--window-glass);
+}
+.window::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(180, 220, 255, 0.3) 0%,
+    rgba(180, 220, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.15) 60%,
+    rgba(180, 220, 255, 0.1) 100%
+  );
+  pointer-events: none;
+}
+.window-cross-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: #4A2F1A;
+  transform: translateY(-50%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.1) inset;
+  z-index: 1;
+}
+.window-cross-v {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  background: #4A2F1A;
+  transform: translateX(-50%);
+  box-shadow: 1px 0 0 rgba(255,255,255,0.1) inset;
+  z-index: 1;
+}
+
+.light-beam {
+  display: none !important;
+}
+@keyframes beamPulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+.furniture-blackboard {
+  position: relative;
+  grid-area: blackboard;
+  justify-self: start;
+  align-self: start;
+  width: 240px;
+  max-width: 100%;
+  height: 320px;
+  z-index: 5;
+  cursor: default;
+  pointer-events: auto;
+}
+
+.furniture-blackboard::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 10%;
+  width: 80%;
+  height: 18px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.furniture-blackboard::after {
+  content: '';
+  position: absolute;
+  top: 188px;
+  left: 30px;
+  width: 10px;
+  height: 135px;
+  background:
+    linear-gradient(135deg, #3D2817, #2A1A0E),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 4px,
+      rgba(0,0,0,0.08) 4px, rgba(0,0,0,0.08) 5px
+    );
+  transform: rotate(12deg);
+  transform-origin: top center;
+  border-radius: 1px;
+  box-shadow: 1px 0 0 rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.blackboard-surface {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 220px;
+  height: 200px;
+  background: var(--cork-beige);
+  border: 4px solid #2A1A0E;
+  box-shadow:
+    3px 3px 0 rgba(0,0,0,0.25),
+    inset 0 0 0 2px rgba(255,255,255,0.08);
+  overflow: hidden;
+  z-index: 2;
+}
+
+.blackboard-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 2px,
+      rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 5px,
+      rgba(0,0,0,0.02) 5px, rgba(0,0,0,0.02) 6px,
+      transparent 6px, transparent 10px,
+      rgba(255,255,255,0.02) 10px, rgba(255,255,255,0.02) 11px
+    );
+  pointer-events: none;
+}
+
+.bb-leg-right {
+  position: absolute;
+  top: 188px;
+  right: 30px;
+  width: 10px;
+  height: 135px;
+  background:
+    linear-gradient(225deg, #3D2817, #2A1A0E),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px, transparent 4px,
+      rgba(0,0,0,0.08) 4px, rgba(0,0,0,0.08) 5px
+    );
+  transform: rotate(-12deg);
+  transform-origin: top center;
+  border-radius: 1px;
+  box-shadow: -1px 0 0 rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.bb-crossbar {
+  position: absolute;
+  top: 280px;
+  left: 68px;
+  width: 105px;
+  height: 6px;
+  background: linear-gradient(180deg, #4A2F1A, #2A1A0E);
+  border: 1px solid #1A0E08;
+  border-radius: 1px;
+  z-index: 2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bb-topbar {
+  position: absolute;
+  top: 168px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 7px;
+  background: linear-gradient(180deg, #4A2F1A, #2A1A0E);
+  border: 1px solid #1A0E08;
+  border-radius: 1px;
+  z-index: 2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.bb-foot-left,
+.bb-foot-right {
+  position: absolute;
+  bottom: 0;
+  width: 14px;
+  height: 8px;
+  background: #2A1A0E;
+  border-radius: 1px;
+  z-index: 2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.bb-foot-left {
+  left: 20px;
+}
+.bb-foot-right {
+  right: 20px;
+}
+
+.bb-paper {
+  position: absolute;
+  background: #FFFEF5;
+  border: 1px solid #E0D8C0;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.12);
+  padding: 3px 4px;
+  font-size: 5.5px;
+  font-family: 'Press Start 2P', monospace;
+  color: #333;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.3;
+  letter-spacing: 0.5px;
+  z-index: 3;
+}
+.bb-paper-1 {
+  width: 85px;
+  height: 50px;
+  top: 14px;
+  left: 12px;
+  transform: rotate(-4deg);
+  z-index: 4;
+}
+.bb-paper-2 {
+  width: 78px;
+  height: 45px;
+  top: 18px;
+  right: 12px;
+  transform: rotate(3deg);
+  z-index: 3;
+}
+.bb-paper-3 {
+  width: 100px;
+  height: 48px;
+  bottom: 14px;
+  left: 60px;
+  transform: rotate(-2deg);
+  z-index: 3;
+}
+
+.bb-paper-4 {
+  width: 48px;
+  height: 60px;
+  top: 70px;
+  left: 14px;
+  transform: rotate(6deg);
+  z-index: 4;
+  padding: 3px;
+}
+.bb-paper-4 .polaroid-image {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #E8F5E9 20%, #81C784 50%, #388E3C 80%);
+  border: 1px solid #CCC;
+  display: block;
+  margin-bottom: 2px;
+}
+.bb-paper-4 .polaroid-caption {
+  font-size: 4px;
+  color: #888;
+  letter-spacing: 0;
+  line-height: 1;
+}
+
+.bb-paper-5 {
+  width: 50px;
+  height: 40px;
+  bottom: 66px;
+  right: 14px;
+  transform: rotate(-5deg);
+  z-index: 3;
+  padding: 3px;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+.bb-paper-5 .cal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  width: 100%;
+}
+.bb-paper-5 .cal-dot {
+  width: 5px;
+  height: 5px;
+  background: #E74C3C;
+  border-radius: 50%;
+}
+.bb-paper-5 .cal-dot:nth-child(2) { background: #3498DB; }
+.bb-paper-5 .cal-dot:nth-child(4) { background: #D4A84B; }
+.bb-paper-5 .cal-dot:nth-child(6) { background: #27AE60; }
+
+.bb-paper-6 {
+  width: 46px;
+  height: 35px;
+  top: 8px;
+  left: 85px;
+  transform: rotate(12deg);
+  z-index: 5;
+  background: #FFF9C4;
+  border-color: #F0E68C;
+  font-size: 5.5px;
+  color: #8B7355;
+}
+
+.bb-pin {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  z-index: 5;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+.bb-pin.red {
+  background: var(--pin-red);
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bb-pin.blue {
+  background: var(--pin-blue);
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bb-pin.gold {
+  background: var(--accent-gold);
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bb-pin.green {
+  background: #27AE60;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bb-pin.pink {
+  background: #E91E63;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.bb-pin.yellow {
+  background: #F1C40F;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bb-strings {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.bb-string {
+  position: absolute;
+  height: 1.5px;
+  background: linear-gradient(90deg, #E74C3C, #C0392B);
+  transform-origin: left center;
+  box-shadow: 0 0 1px rgba(231,76,60,0.3);
+}
+
+.bb-replace {
+  display: none;
+}
+
+.floor-furniture {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 55px;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "blackboard bookshelf"
+    ".          bookshelf"
+    "mailbox    bookshelf";
+  z-index: 5;
+  pointer-events: none;
+  overflow: visible;
+  padding: 0 15px 30px;
+}
+
+.deco-bb-plant {
+  position: absolute;
+  right: -34px;
+  bottom: 2px;
+  width: 30px;
+  height: 40px;
+  z-index: 5;
+}
+.deco-bb-plant::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 2px;
+  width: 22px;
+  height: 11px;
+  background: linear-gradient(180deg, #A87B51, #5C3A21);
+  border: 1.5px solid #3D2817;
+  border-radius: 0 0 2px 2px;
+  z-index: 2;
+}
+.deco-bb-plant::after {
+  content: '';
+  position: absolute;
+  bottom: 10px;
+  left: 5px;
+  width: 16px;
+  height: 5px;
+  background: #3D2817;
+  border-radius: 1px;
+  z-index: 2;
+}
+.plant-stem {
+  position: absolute;
+  bottom: 14px;
+  left: 12px;
+  width: 2px;
+  height: 14px;
+  background: #2E7D32;
+  z-index: 1;
+}
+.plant-leaf {
+  position: absolute;
+  width: 8px;
+  height: 6px;
+  background: #4CAF50;
+  border-radius: 50%;
+  z-index: 1;
+}
+.plant-leaf-1 {
+  bottom: 24px;
+  left: 6px;
+  transform: rotate(-30deg);
+  background: #66BB6A;
+}
+.plant-leaf-2 {
+  bottom: 20px;
+  left: 14px;
+  transform: rotate(20deg);
+  background: #43A047;
+}
+.plant-leaf-3 {
+  bottom: 26px;
+  left: 10px;
+  transform: rotate(-10deg);
+  background: #388E3C;
+  width: 7px;
+  height: 5px;
+}
+
+.furniture-bookshelf {
+  position: relative;
+  grid-area: bookshelf;
+  justify-self: center;
+  align-self: start;
+  margin-top: 50px;
+  width: 180px;
+  max-width: 100%;
+  height: 220px;
+  z-index: 5;
+  background: #3D2817;
+  border: 8px solid #3D2817;
+  border-style: inset;
+  border-color: #2A1A0E #5C3A21 #5C3A21 #2A1A0E;
+  box-shadow:
+    4px 4px 0 rgba(0,0,0,0.3),
+    inset 0 0 0 2px rgba(255,255,255,0.06),
+    0 0 0 4px var(--ui-border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  cursor: default;
+}
+.bookshelf-label {
+  font-size: 8px;
+  color: var(--accent-gold);
+  text-align: center;
+  padding: 6px 0 4px;
+  letter-spacing: 2px;
+  text-shadow: 1px 1px 0 var(--ui-border);
+  border-bottom: 2px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+}
+.bookshelf-interior {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 6px 6px;
+  gap: 5px;
+  position: relative;
+}
+.bookshelf-shelf {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 0 3px;
+  flex: 1;
+}
+.bookshelf-shelf::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -6px;
+  right: -6px;
+  height: 8px;
+  background: linear-gradient(180deg, #5C3A21, #3D2817);
+  border-top: 2px solid rgba(255,255,255,0.1);
+  border-bottom: 2px solid var(--ui-border);
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.bookshelf-shelf:last-child::after {
+  display: none;
+}
+
+.book {
+  width: 10px;
+  border-radius: 1px;
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.book:hover {
+  transform: translateY(-2px) !important;
+}
+.book::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  right: 1px;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+.book::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: rgba(0,0,0,0.2);
+}
+.book-spacer {
+  flex: 1;
+  min-width: 2px;
+}
+
+.furniture-desk {
+  position: relative;
+  grid-area: mailbox;
+  justify-self: start;
+  align-self: end;
+  width: 160px;
+  max-width: 100%;
+  height: 180px;
+  z-index: 5;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0;
+  cursor: default;
+  pointer-events: auto;
+}
+.furniture-desk::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 18%;
+  width: 64%;
+  height: 12px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  z-index: 0;
+  filter: blur(2px);
+}
+.furniture-desk::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 70px;
+  background:
+    linear-gradient(90deg, #2A2A2A 0%, #4A4A4A 40%, #6A6A6A 50%, #4A4A4A 60%, #2A2A2A 100%);
+  border: 2px solid #1A0E08;
+  border-radius: 2px 2px 0 0;
+  z-index: 1;
+  box-shadow: inset -2px 0 0 rgba(0,0,0,0.3), inset 2px 0 0 rgba(255,255,255,0.1);
+}
+.desk-surface {
+  position: absolute;
+  top: 8px;
+  left: 18px;
+  width: 124px;
+  height: 96px;
+  background:
+    linear-gradient(180deg, #2D5BA8 0%, #1E3F7A 100%);
+  border: 3px solid #0F1F40;
+  border-radius: 62px 62px 6px 6px / 52px 52px 6px 6px;
+  z-index: 3;
+  box-shadow:
+    2px 3px 0 rgba(0,0,0,0.35),
+    inset 0 3px 0 rgba(255,255,255,0.2),
+    inset 0 -5px 0 rgba(0,0,0,0.25),
+    inset -3px 0 0 rgba(0,0,0,0.18),
+    inset 3px 0 0 rgba(255,255,255,0.08);
+}
+.desk-surface::before {
+  content: '';
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 78px;
+  height: 9px;
+  background: linear-gradient(180deg, #0A0A0A, #1A1A1A);
+  border: 2px solid #000;
+  border-radius: 2px;
+  box-shadow: inset 0 2px 3px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.15);
+}
+.desk-surface::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  width: 18px;
+  height: 13px;
+  background:
+    linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+  border: 2px solid #1A0E08;
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 60% 50%, 100% 100%, 0 100%);
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+  animation: flagWave 2.4s ease-in-out infinite;
+  transform-origin: left center;
+}
+@keyframes flagWave {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-4deg); }
+}
+.desk-top {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 90px;
+  margin: 0;
+  z-index: 4;
+  pointer-events: none;
+  flex-direction: column;
+}
+.desk-monitor {
+  width: 70px;
+  height: 16px;
+  background: #FFF8DC;
+  border: 2px solid #1A0E08;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  color: #1E3F7A;
+  letter-spacing: 1.5px;
+  box-shadow: inset 0 -2px 0 rgba(0,0,0,0.15), 1px 1px 0 rgba(0,0,0,0.25);
+  margin-bottom: 0;
+}
+.desk-item {
+  display: none;
+}
+.desk-item::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 60%;
+  background:
+    linear-gradient(180deg, transparent 49%, #1A0E08 49%, #1A0E08 51%, transparent 51%),
+    #FFF8DC;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border: none;
+}
+.desk-item::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  background: #C0392B;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #1A0E08, inset -1px -1px 0 rgba(0,0,0,0.3);
+  z-index: 2;
+}
+.desk-footer {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 58px;
+  height: 16px;
+  background: linear-gradient(180deg, #D4A84B, #B88930);
+  border: 2px solid #1A0E08;
+  border-radius: 2px;
+  z-index: 4;
+  box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+.desk-footer span {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 6px;
+  color: #2A1A0E;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+}
+
+.deco-shadow {
+  position: absolute;
+  width: 100%;
+  height: 6px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 50%;
+  bottom: -4px;
+  left: 0;
+  pointer-events: none;
+}
+
+.deco-plant {
+  position: absolute;
+  right: 150px;
+  bottom: 30px;
+  z-index: 6;
+  font-size: 72px;
+  filter: drop-shadow(3px 3px 0 rgba(0,0,0,0.3));
+  opacity: 1;
+  animation: plantSway 3s ease-in-out infinite;
+}
+@keyframes plantSway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+.deco-plant .deco-shadow {
+  bottom: -8px;
+}
+
+.deco-boxes {
+  display: none !important;
+}
+.deco-boxes .box-stack {
+  display: flex;
+  gap: 2px;
+  line-height: 1;
+}
+.deco-boxes .deco-shadow {
+  bottom: -6px;
+}
+
+.deco-sofa {
+  position: absolute;
+  right: 25%;
+  bottom: 30px;
+  z-index: 6;
+  font-size: 220px;
+  filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.3));
+  opacity: 1;
+}
+.deco-sofa .deco-shadow {
+  bottom: -6px;
+  width: 90%;
+  left: 5%;
+}
+
+.avatar {
+  position: absolute;
+  width: 48px;
+  height: 64px;
+  z-index: 15;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  transition: left 0.6s ease-in-out,
+              top 0.5s ease-in-out;
+  filter: drop-shadow(0 0 8px rgba(212,168,75,0.08));
+}
+
+.avatar-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 6px;
+  width: 36px;
+  height: 6px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  z-index: 1;
+  transition: opacity 0.3s;
+}
+
+.avatar-flipper {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.avatar-sprite {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.avatar-head {
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 36px;
+  height: 32px;
+  background: var(--avatar-skin);
+  border-radius: 48% 48% 42% 42% / 55% 55% 45% 45%;
+  z-index: 3;
+  box-shadow:
+    inset -2px -2px 0 rgba(0,0,0,0.08),
+    inset 2px 2px 0 rgba(255,255,255,0.25);
+  animation: headIdle 2.5s ease-in-out infinite;
+}
+.avatar-head::after {
+  content: '';
+  position: absolute;
+  top: 21px;
+  left: 50%;
+  width: 3px;
+  height: 2px;
+  background: rgba(0,0,0,0.18);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+}
+.avatar-head::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 4px;
+  width: 28px;
+  height: 8px;
+  background:
+    radial-gradient(circle at 20% 100%, #4A2818 22%, transparent 24%),
+    radial-gradient(circle at 55% 100%, #4A2818 26%, transparent 28%),
+    radial-gradient(circle at 85% 100%, #4A2818 22%, transparent 24%),
+    linear-gradient(180deg, #6B3A2A, #4A2818);
+  border-radius: 0 0 40% 40% / 0 0 100% 100%;
+  z-index: 6;
+  pointer-events: none;
+}
+@keyframes headIdle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.5px); }
+}
+
+.avatar-hair {
+  position: absolute;
+  left: 3px;
+  top: -2px;
+  width: 42px;
+  height: 18px;
+  background:
+    radial-gradient(circle at 50% 100%, rgba(0,0,0,0.25), transparent 60%),
+    linear-gradient(180deg, #6B3A2A 0%, #4A2818 100%);
+  border-radius: 50% 50% 35% 35% / 75% 75% 25% 25%;
+  z-index: 5;
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,0.12),
+    inset 0 -2px 0 rgba(0,0,0,0.25);
+}
+.avatar-hair::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 6px;
+  width: 7px;
+  height: 14px;
+  background: linear-gradient(180deg, #6B3A2A, #4A2818);
+  border-radius: 60% 20% 40% 80% / 50% 30% 50% 70%;
+  box-shadow: inset -1px 0 0 rgba(0,0,0,0.2);
+}
+.avatar-hair::after {
+  content: '';
+  position: absolute;
+  right: -2px;
+  top: 6px;
+  width: 7px;
+  height: 14px;
+  background: linear-gradient(180deg, #6B3A2A, #4A2818);
+  border-radius: 20% 60% 80% 40% / 30% 50% 70% 50%;
+  box-shadow: inset 1px 0 0 rgba(0,0,0,0.2);
+}
+
+.avatar-eye {
+  position: absolute;
+  width: 5px;
+  height: 6px;
+  background: #1A0E08;
+  border-radius: 50%;
+  top: 15px;
+  z-index: 6;
+  box-shadow: inset -1px -1px 0 rgba(255,255,255,0.35);
+  animation: avatarBlink 4s ease-in-out infinite;
+}
+.avatar-eye.left  { left: 12px; }
+.avatar-eye.right { left: 31px; }
+
+.avatar-glasses {
+  position: absolute;
+  top: 12px;
+  left: 7px;
+  width: 34px;
+  height: 12px;
+  z-index: 7;
+  pointer-events: none;
+}
+.avatar-glasses::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 2px rgba(212,168,75,0.2);
+}
+.avatar-glasses::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--accent-gold);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 2px rgba(212,168,75,0.2);
+}
+.avatar-glasses-bridge {
+  position: absolute;
+  top: 5px;
+  left: 12px;
+  width: 10px;
+  height: 2px;
+  background: var(--accent-gold);
+}
+
+.avatar-cheek {
+  position: absolute;
+  width: 6px;
+  height: 4px;
+  background: rgba(255, 140, 140, 0.55);
+  border-radius: 50%;
+  top: 24px;
+  z-index: 4;
+  filter: blur(0.3px);
+}
+.avatar-cheek.left  { left: 6px; }
+.avatar-cheek.right { left: 36px; }
+
+.avatar-mouth {
+  position: absolute;
+  top: 26px;
+  left: 20px;
+  width: 7px;
+  height: 3px;
+  border-bottom: 1.5px solid #B8505A;
+  border-radius: 0 0 50% 50%;
+  z-index: 5;
+}
+
+.avatar-body {
+  position: absolute;
+  left: 8px;
+  top: 26px;
+  width: 32px;
+  height: 22px;
+  background: var(--avatar-body);
+  border-radius: 4px 4px 0 0;
+  z-index: 2;
+}
+.avatar-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 0 0 2px 2px;
+}
+
+.avatar-arm {
+  position: absolute;
+  width: 7px;
+  height: 18px;
+  background: var(--avatar-body);
+  border-radius: 3px;
+  top: 26px;
+  z-index: 1;
+}
+.avatar-arm.left  { left: 1px; }
+.avatar-arm.right { left: 40px; }
+
+.avatar-legs {
+  position: absolute;
+  left: 10px;
+  top: 48px;
+  width: 28px;
+  height: 14px;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+.avatar-leg {
+  width: 12px;
+  height: 14px;
+  background: #2A1A0E;
+  border-radius: 0 0 3px 3px;
+  position: relative;
+}
+.avatar-leg:last-child {
+  background: #1A0E08;
+}
+
+.avatar-leg::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -1px;
+  right: -1px;
+  height: 3px;
+  background: #1A0E08;
+  border-radius: 0 0 2px 2px;
+}
+
+.avatar.idle {
+  filter: drop-shadow(0 0 18px rgba(212,168,75,0.35));
+  animation: idleGlow 2.5s ease-in-out infinite;
+}
+@keyframes idleGlow {
+  0%, 100% { filter: drop-shadow(0 0 12px rgba(212,168,75,0.25)); }
+  50% { filter: drop-shadow(0 0 22px rgba(212,168,75,0.4)); }
+}
+.avatar.idle .avatar-sprite {
+  animation: idleFloat 3s ease-in-out infinite;
+}
+@keyframes idleFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-3px) rotate(1deg);
+  }
+  75% {
+    transform: translateY(-1px) rotate(-1deg);
+  }
+}
+.avatar.idle .avatar-shadow {
+  animation: shadowFloat 3s ease-in-out infinite;
+}
+@keyframes shadowFloat {
+  0%, 100% { transform: scaleX(1); opacity: 0.3; }
+  33% { transform: scaleX(0.85); opacity: 0.15; }
+  66% { transform: scaleX(0.95); opacity: 0.25; }
+}
+
+@keyframes avatarBlink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+.avatar.walking-horizontal .avatar-sprite {
+  animation: walkHorizontal 0.3s ease-in-out infinite;
+}
+@keyframes walkHorizontal {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(-3deg); }
+  75% { transform: translateY(-1px) rotate(3deg); }
+}
+.avatar.walking-horizontal .avatar-shadow {
+  animation: shadowWalk 0.3s ease-in-out infinite;
+}
+@keyframes shadowWalk {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(0.85); }
+}
+
+.avatar.walking-vertical .avatar-sprite {
+  animation: walkVertical 0.35s ease-in-out infinite;
+}
+@keyframes walkVertical {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.avatar.walking-vertical .avatar-shadow {
+  animation: shadowWalk 0.35s ease-in-out infinite;
+}
+
+.avatar.facing-left  .avatar-flipper { transform: scaleX(-1); }
+.avatar.facing-right .avatar-flipper { transform: scaleX(1); }
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: var(--overlay-bg);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: overlayFadeIn 0.3s ease;
+}
+.modal-overlay.open {
+  display: flex;
+}
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.modal-dialog {
+  width: 680px;
+  max-width: 92vw;
+  max-height: 82vh;
+  background: var(--modal-bg);
+  border: 5px solid var(--accent-gold);
+  box-shadow:
+    8px 8px 0 0 var(--shadow-pixel, #1A0E08),
+    inset 0 0 0 2px rgba(255,255,255,0.06),
+    0 0 30px rgba(212,168,75,0.1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.35s cubic-bezier(0.34, 1.4, 0.64, 1);
+  position: relative;
+}
+.modal-dialog::before,
+.modal-dialog::after {
+  content: '◆';
+  position: absolute;
+  font-size: 8px;
+  color: var(--accent-gold);
+  opacity: 0.3;
+}
+.modal-dialog::before { top: -3px; left: -3px; }
+.modal-dialog::after { bottom: -3px; right: -3px; }
+
+@keyframes modalPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.modal-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  background: linear-gradient(90deg, var(--ui-border), var(--sidebar-bg));
+  border-bottom: 3px solid var(--accent-gold);
+}
+.modal-titlebar h2 {
+  font-size: 13px;
+  color: var(--accent-gold);
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 var(--ui-border);
+  word-break: keep-all;
+}
+.modal-close {
+  width: 28px; height: 28px;
+  background: var(--sidebar-bg);
+  border: 3px solid var(--accent-gold);
+  color: var(--accent-gold);
+  font-size: 12px;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='2' y='2' width='12' height='12' fill='%23D4A84B'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23F5E6C8'/%3E%3C/svg%3E") 4 4, pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: 2px 2px 0 var(--ui-border);
+  transition: all 0.1s;
+  flex-shrink: 0;
+}
+.modal-close:hover {
+  background: #E74C3C;
+  border-color: #E8C86A;
+  color: #fff;
+  box-shadow: 1px 1px 0 var(--ui-border);
+  transform: translate(1px, 1px);
+}
+.modal-close:active {
+  box-shadow: none;
+  transform: translate(2px, 2px);
+}
+
+.modal-content {
+  padding: 26px 32px;
+  overflow-y: auto;
+  flex: 1;
+  font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-cream);
+}
+.modal-content h3 {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 11px;
+  color: var(--accent-gold);
+  margin: 16px 0 8px;
+  letter-spacing: 1px;
+}
+.modal-content h3:first-child {
+  margin-top: 0;
+}
+.modal-content p {
+  margin-bottom: 10px;
+}
+.modal-content .job-entry,
+.modal-content .project-card,
+.modal-content .paper-entry {
+  background: rgba(0,0,0,0.2);
+  border: 2px solid var(--ui-border);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: inset 1px 1px 0 rgba(255,255,255,0.05);
+}
+.modal-content .job-title {
+  font-family: 'Microsoft YaHei', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--accent-gold);
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+.modal-content .job-meta {
+  font-size: 12px;
+  color: var(--text-cream-dim);
+  margin-bottom: 8px;
+}
+.modal-content .job-desc {
+  font-size: 13px;
+  line-height: 1.75;
+}
+.modal-content .project-card h4,
+.modal-content .paper-entry h4 {
+  font-family: 'Microsoft YaHei', sans-serif;
+  font-size: 13px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.modal-content .project-card p,
+.modal-content .paper-entry p {
+  font-size: 13px;
+}
+.paper-entry .paper-meta {
+  font-size: 11px;
+  color: var(--text-cream-dim);
+  margin-bottom: 6px;
+}
+.paper-entry .paper-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 5px 12px;
+  background: var(--sidebar-bg);
+  border: 2px solid var(--accent-gold);
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 11px;
+  font-family: 'Press Start 2P', monospace;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='2' y='2' width='12' height='12' fill='%23D4A84B'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23F5E6C8'/%3E%3C/svg%3E") 4 4, pointer;
+}
+.paper-entry .paper-link:hover {
+  background: var(--accent-gold);
+  color: var(--ui-border);
+  box-shadow: 2px 2px 0 var(--ui-border);
+}
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+.contact-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  background: rgba(0,0,0,0.2);
+  border: 2px solid var(--ui-border);
+  color: var(--text-cream);
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.15s;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Crect x='2' y='2' width='12' height='12' fill='%23D4A84B'/%3E%3Crect x='4' y='4' width='8' height='8' fill='%23F5E6C8'/%3E%3C/svg%3E") 4 4, pointer;
+}
+.contact-link:hover {
+  background: var(--sidebar-active);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+.contact-link i {
+  width: 24px;
+  text-align: center;
+  font-size: 20px;
+  color: var(--accent-gold);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+.skill-tag {
+  background: rgba(212,168,75,0.12);
+  border: 2px solid var(--accent-gold);
+  padding: 6px 10px;
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-cream);
+  letter-spacing: 0.5px;
+}
+.edu-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.edu-row .edu-time {
+  font-size: 11px;
+  color: var(--text-cream-dim);
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: var(--ui-border);
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--accent-gold);
+  border: 2px solid var(--ui-border);
+}
+
+@keyframes sceneAppear {
+  from { opacity: 0; transform: scale(1.02); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .sidebar { width: 200px; min-width: 200px; }
+  .nav-item { font-size: 8px; padding: 10px 14px; }
+  .floor-furniture { top: 48px; }
+  .furniture-blackboard { width: 185px; height: 245px; }
+  .furniture-blackboard .blackboard-surface { width: 169px; height: 155px; left: 8px; }
+  .furniture-blackboard::after { top: 145px; height: 100px; left: 22px; width: 8px; }
+  .bb-leg-right { top: 145px; height: 100px; right: 22px; width: 8px; }
+  .bb-topbar { top: 132px; width: 22px; height: 6px; }
+  .bb-crossbar { top: 215px; left: 52px; width: 80px; }
+  .bb-foot-left { left: 16px; width: 11px; height: 7px; }
+  .bb-foot-right { right: 16px; width: 11px; height: 7px; }
+  .bb-paper-1 { width: 65px; height: 38px; top: 10px; left: 8px; font-size: 4.5px; }
+  .bb-paper-2 { width: 60px; height: 34px; top: 14px; right: 8px; font-size: 4.5px; }
+  .bb-paper-3 { width: 78px; height: 36px; bottom: 10px; left: 46px; font-size: 4.5px; }
+  .bb-paper-4 { width: 36px; height: 46px; top: 54px; left: 10px; font-size: 4px; padding: 2px; }
+  .bb-paper-4 .polaroid-image { width: 28px; height: 28px; }
+  .bb-paper-5 { width: 38px; height: 30px; bottom: 50px; right: 10px; font-size: 4px; }
+  .bb-paper-6 { width: 34px; height: 26px; top: 6px; left: 65px; font-size: 4.5px; }
+  .deco-bb-plant { right: -26px; bottom: 0; transform: scale(0.85); transform-origin: bottom right; }
+  .furniture-bookshelf { width: 135px; height: 155px; }
+  .furniture-desk { width: 150px; height: 105px; }
+  .window { width: 90px; height: 90px; right: 20px; top: 45px; border-width: 6px; }
+  .light-beam { width: 280px; height: 360px; right: 25px; top: 45px; }
+  .floor-left { top: 235px; }
+  .floor-right { top: 235px; }
+  .floor-divider { top: 235px; }
+  .deco-sofa { left: 30%; bottom: 15px; font-size: 40px; }
+  .deco-plant { right: 8px; bottom: 8px; font-size: 26px; }
+  .deco-boxes { left: calc(50% + 30px); bottom: 18px; font-size: 20px; }
+  .wall-clock { left: calc(50% - 100px); top: 60px; width: 40px; height: 40px; border-width: 4px; }
+  .wall-clock::before { height: 10px; }
+  .wall-clock::after { height: 14px; }
+  .framed-picture { right: 170px; top: 38px; width: 55px; height: 40px; border-width: 4px; }
+  .center-rug { left: calc(50% - 100px); top: 280px; width: 200px; height: 95px; }
+  .wainscoting { top: 168px; height: 55px; }
+  .baseboard { top: 223px; }
+  .wall-pillar { width: 10px; }
+  .ceiling-lamp { left: calc(50% - 10px); }
+  .ceiling-lamp-shade { border-left-width: 10px; border-right-width: 10px; border-top-width: 14px; top: 32px; }
+  .ceiling-lamp-wire { height: 32px; }
+  .ceiling-lamp-bulb { top: 46px; width: 6px; height: 6px; }
+  .lamp-glow { width: 220px; height: 300px; left: calc(50% - 110px); top: 40px; }
+  .modal-dialog { width: 90vw; }
+}
+@media (max-width: 600px) {
+  .app-container { flex-direction: column; }
+  .sidebar {
+    width: 100%; min-width: unset;
+    height: auto; max-height: 40vh;
+    border-right: none;
+    border-bottom: 3px solid var(--ui-border);
+  }
+  .scene { height: 60vh; }
+  .floor-furniture {
+    top: 40px;
+    padding: 0 10px 20px;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "blackboard"
+      "bookshelf"
+      "mailbox";
+  }
+  .furniture-blackboard { width: 130px; height: 175px; }
+  .furniture-bookshelf { width: 85px; height: 120px; border-width: 5px; justify-self: start; }
+  .furniture-desk { width: 120px; height: 85px; }
+  .furniture-blackboard .blackboard-surface { width: 118px; height: 108px; left: 6px; border-width: 3px; }
+  .furniture-blackboard::after { top: 102px; height: 73px; left: 16px; width: 6px; }
+  .bb-leg-right { top: 102px; height: 73px; right: 16px; width: 6px; }
+  .bb-topbar { top: 92px; width: 16px; height: 5px; }
+  .bb-crossbar { top: 152px; left: 36px; width: 58px; height: 4px; }
+  .bb-foot-left { left: 10px; width: 8px; height: 5px; }
+  .bb-foot-right { right: 10px; width: 8px; height: 5px; }
+  .bb-paper-1 { width: 44px; height: 26px; top: 6px; left: 5px; font-size: 4px; }
+  .bb-paper-2 { width: 40px; height: 24px; top: 9px; right: 5px; font-size: 4px; }
+  .bb-paper-3 { width: 46px; height: 22px; bottom: 5px; left: 28px; font-size: 4px; }
+  .bb-paper-4 { display: none; }
+  .bb-paper-5 { display: none; }
+  .bb-paper-6 { display: none; }
+  .deco-bb-plant { display: none; }
+  .window { width: 65px; height: 65px; right: 10px; top: 30px; border-width: 5px; display: none; }
+  .light-beam { width: 180px; height: 250px; right: 15px; top: 32px; }
+  .floor-left { top: 175px; }
+  .floor-right { top: 175px; }
+  .floor-divider { top: 175px; }
+  .bookshelf-shelf { gap: 2px; }
+  .book { width: 6px; }
+  .deco-sofa { display: none; }
+  .deco-plant { right: 5px; bottom: 5px; font-size: 20px; }
+  .deco-boxes { left: calc(50% + 15px); bottom: 8px; font-size: 16px; }
+  .wall-clock { left: calc(50% - 60px); top: 40px; width: 30px; height: 30px; border-width: 3px; display: none; }
+  .framed-picture { right: 120px; top: 28px; width: 40px; height: 30px; border-width: 3px; display: none; }
+  .center-rug { left: calc(50% - 60px); top: 210px; width: 120px; height: 60px; }
+  .wainscoting { top: 140px; height: 30px; display: none; }
+  .baseboard { top: 170px; display: none; }
+  .wall-pillar { display: none; }
+  .ceiling-lamp { left: calc(50% - 8px); display: none; }
+  .lamp-glow { display: none; }
+  .desk-monitor { width: 40px; height: 28px; font-size: 14px; }
+  .desk-item { width: 28px; height: 24px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- ==========================================================
+       左侧栏 — RPG 状态菜单
+       ========================================================== -->
+  <aside class="sidebar" role="navigation" aria-label="RPG 菜单">
+    <!-- 角色状态区 -->
+    <div class="status-section">
+      <div class="pixel-avatar" aria-label="像素头像"></div>
+      <div class="avatar-name">XIE YIBIN</div>
+      <div class="avatar-title" lang="zh">🎓 管理科学与工程 博士 Lv.6</div>
+      <div class="avatar-hp-bar">
+        <div class="avatar-hp-fill" style="width:92%"></div>
+      </div>
+      <span class="avatar-hp-label">HP 92/100 &nbsp; EXP 6 PAPERS</span>
+    </div>
+
+    <!-- 导航菜单 -->
+    <nav class="nav-menu">
+      <!-- 菜单项 1: 关于我 -->
+      <div class="nav-item active" data-target="about">
+        <span class="nav-icon">📜</span>
+        <span lang="zh">关于我</span>
+      </div>
+
+      <!-- 菜单项 2: 参与项目 → 黑板 -->
+      <div class="nav-item" data-target="resume" data-furniture="blackboard">
+        <span class="nav-icon">🛠️</span>
+        <span lang="zh">参与项目</span>
+      </div>
+
+      <!-- 菜单项 3: 论文 → 书架，带子菜单 -->
+      <div class="nav-item has-submenu" data-target="projects">
+        <span class="nav-icon">📚</span>
+        <span lang="zh">论文</span>
+        <span style="margin-left:auto;font-size:7px;color:var(--accent-gold);" class="submenu-arrow">▸</span>
+      </div>
+      <div class="submenu" data-parent="projects">
+        <div class="nav-item" data-target="paper-1" data-furniture="bookshelf">
+          <span lang="zh">EJOR · 人群密度监控 (JCRQ1)</span>
+        </div>
+        <div class="nav-item" data-target="paper-2" data-furniture="bookshelf">
+          <span lang="zh">QTQM · 食品生产控制 (JCRQ1)</span>
+        </div>
+        <div class="nav-item" data-target="paper-3" data-furniture="bookshelf">
+          <span lang="zh">Optim · 分布式优化 (JCRQ1)</span>
+        </div>
+        <div class="nav-item" data-target="paper-4" data-furniture="bookshelf">
+          <span lang="zh">控制理论与应用 · 分布式优化 (EI 北核)</span>
+        </div>
+        <div class="nav-item" data-target="paper-5" data-furniture="bookshelf">
+          <span lang="zh">控制理论与应用 · 分布式优化 (EI 北核)</span>
+        </div>
+        <div class="nav-item" data-target="paper-6" data-furniture="bookshelf">
+          <span lang="zh">YAC 2022 · 分布式优化 (会议)</span>
+        </div>
+      </div>
+
+      <!-- 菜单项 4: 专利 → 黑板 -->
+      <div class="nav-item" data-target="patents" data-furniture="blackboard">
+        <span class="nav-icon">📜</span>
+        <span lang="zh">专利</span>
+      </div>
+
+      <!-- 菜单项 5: 联系我 → 邮箱 -->
+      <div class="nav-item" data-target="contact" data-furniture="desk">
+        <span class="nav-icon">✉️</span>
+        <span lang="zh">联系我</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <span lang="zh">🔮 点击菜单 · 角色移动至家具前</span>
+    </div>
+  </aside>
+
+  <!-- ==========================================================
+       右侧主场景 — 像素房间
+       ========================================================== -->
+  <main class="scene" id="scene">
+    <div class="scene-wall-top"></div>
+
+    <div class="wall-pillar left"></div>
+    <div class="wall-pillar right"></div>
+
+    <div class="wainscoting"></div>
+    <div class="baseboard"></div>
+
+    <div class="ceiling-lamp">
+      <div class="ceiling-lamp-wire"></div>
+      <div class="ceiling-lamp-shade"></div>
+      <div class="ceiling-lamp-bulb"></div>
+    </div>
+    <div class="lamp-glow"></div>
+
+    <div class="wall-clock">
+      <div class="wall-clock-center"></div>
+    </div>
+
+    <div class="framed-picture"></div>
+
+    <div class="floor-left"></div>
+    <div class="floor-right"></div>
+    <div class="floor-divider"></div>
+
+    <div class="center-rug"></div>
+
+    <div class="window">
+      <div class="window-cross-h"></div>
+      <div class="window-cross-v"></div>
+    </div>
+    <div class="light-beam"></div>
+
+    <div class="floor-furniture">
+
+    <!-- 家具 1: 立式公告栏 → 参与项目 -->
+    <div class="furniture-blackboard" id="furniture-blackboard">
+      <div class="bb-topbar"></div>
+      <div class="blackboard-surface">
+        <div class="bb-strings">
+          <div class="bb-string" style="left:42px;top:8px;width:44px;transform:rotate(-5deg);"></div>
+          <div class="bb-string" style="left:86px;top:4px;width:49px;transform:rotate(9deg);"></div>
+          <div class="bb-string" style="left:29px;top:53px;width:83px;transform:rotate(45.5deg);"></div>
+          <div class="bb-string" style="left:135px;top:12px;width:65px;transform:rotate(82deg);"></div>
+        </div>
+        <div class="bb-paper bb-paper-1" style="flex-direction:column;">
+          <span class="bb-pin red"></span>
+          <span>🛠️ PROJECTS</span>
+          <span style="font-size:3.5px;color:#999;">7 items</span>
+        </div>
+        <div class="bb-paper bb-paper-2" style="flex-direction:column;gap:1px;">
+          <span class="bb-pin blue"></span>
+          <span>📚 PAPERS</span>
+          <span style="font-size:3.5px;color:#999;">6 published</span>
+        </div>
+        <div class="bb-paper bb-paper-3">
+          <span class="bb-pin gold"></span>
+          ✉️ CONTACT
+        </div>
+        <div class="bb-paper bb-paper-4" style="flex-direction:column;gap:1px;">
+          <span class="bb-pin green"></span>
+          <span class="polaroid-image"></span>
+          <span class="polaroid-caption">🎓 SCUT</span>
+        </div>
+        <div class="bb-paper bb-paper-5">
+          <span class="bb-pin pink"></span>
+          <div class="cal-grid">
+            <span class="cal-dot"></span>
+            <span class="cal-dot"></span>
+            <span class="cal-dot"></span>
+            <span class="cal-dot"></span>
+            <span class="cal-dot"></span>
+            <span class="cal-dot"></span>
+          </div>
+        </div>
+        <div class="bb-paper bb-paper-6">
+          <span class="bb-pin yellow"></span>
+          2026 PhD
+        </div>
+      </div>
+      <div class="bb-leg-right"></div>
+      <div class="bb-crossbar"></div>
+      <div class="bb-foot-left"></div>
+      <div class="bb-foot-right"></div>
+      <div class="deco-bb-plant">
+        <span class="plant-stem"></span>
+        <span class="plant-leaf plant-leaf-1"></span>
+        <span class="plant-leaf plant-leaf-2"></span>
+        <span class="plant-leaf plant-leaf-3"></span>
+      </div>
+    </div>
+
+    <!-- 家具 2: 书架 → 论文 -->
+    <div class="furniture-bookshelf" id="furniture-bookshelf">
+      <div class="bookshelf-label">>>> PAPERS <<<</div>
+      <div class="bookshelf-interior">
+        <div class="bookshelf-shelf">
+          <div class="book" style="height:70%;background:#C0392B;"></div>
+          <div class="book" style="height:85%;background:#2980B9;transform:rotate(2deg);"></div>
+          <div class="book" style="height:60%;background:#27AE60;"></div>
+          <div class="book" style="height:75%;background:#8E44AD;"></div>
+          <div class="book" style="height:90%;background:#D4A84B;transform:rotate(-1deg);"></div>
+          <div class="book" style="height:55%;background:#E67E22;"></div>
+          <div class="book" style="height:65%;background:#1ABC9C;"></div>
+          <div class="book" style="height:80%;background:#E74C3C;transform:rotate(3deg);"></div>
+        </div>
+        <div class="bookshelf-shelf">
+          <div class="book" style="height:65%;background:#3498DB;"></div>
+          <div class="book" style="height:80%;background:#2ECC71;"></div>
+          <div class="book" style="height:70%;background:#9B59B6;transform:rotate(-2deg);"></div>
+          <div class="book" style="height:55%;background:#E67E22;"></div>
+          <div class="book" style="height:85%;background:#C0392B;"></div>
+          <div class="book" style="height:60%;background:#2980B9;"></div>
+          <div class="book" style="height:75%;background:#27AE60;transform:rotate(2deg);"></div>
+          <div class="book" style="height:90%;background:#8E44AD;"></div>
+        </div>
+        <div class="bookshelf-shelf">
+          <div class="book" style="height:75%;background:#D4A84B;transform:rotate(-1deg);"></div>
+          <div class="book" style="height:60%;background:#E74C3C;"></div>
+          <div class="book" style="height:85%;background:#1ABC9C;"></div>
+          <div class="book" style="height:70%;background:#C0392B;"></div>
+          <div class="book" style="height:55%;background:#2980B9;transform:rotate(2deg);"></div>
+          <div class="book" style="height:80%;background:#27AE60;"></div>
+          <div class="book" style="height:65%;background:#8E44AD;"></div>
+          <div class="book" style="height:90%;background:#E67E22;transform:rotate(-3deg);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deco-sofa">
+      🛋️
+      <div class="deco-shadow"></div>
+    </div>
+
+    <div class="deco-boxes">
+      <div class="box-stack">
+        <span>📦</span>
+      </div>
+      <div class="box-stack">
+        <span>📦</span><span>📦</span>
+      </div>
+      <div class="deco-shadow"></div>
+    </div>
+
+    <div class="deco-plant">
+      🪴
+      <div class="deco-shadow"></div>
+    </div>
+
+    <!-- 家具 3: 邮箱 → 联系我 -->
+    <div class="furniture-desk" id="furniture-desk">
+      <div class="desk-surface"></div>
+      <div class="desk-top">
+        <div class="desk-monitor">MAIL</div>
+        <div class="desk-item"></div>
+      </div>
+      <div class="desk-footer">
+        <span>CONTACT</span>
+      </div>
+    </div>
+
+    </div><!-- /.floor-furniture -->
+
+    <!-- Avatar -->
+    <div class="avatar idle" id="avatar">
+      <div class="avatar-shadow"></div>
+      <div class="avatar-flipper">
+      <div class="avatar-sprite">
+        <div class="avatar-hair"></div>
+        <div class="avatar-head">
+          <div class="avatar-eye left"></div>
+          <div class="avatar-eye right"></div>
+          <div class="avatar-glasses">
+            <div class="avatar-glasses-bridge"></div>
+          </div>
+          <div class="avatar-cheek left"></div>
+          <div class="avatar-cheek right"></div>
+          <div class="avatar-mouth"></div>
+        </div>
+        <div class="avatar-arm left"></div>
+        <div class="avatar-arm right"></div>
+        <div class="avatar-body"></div>
+        <div class="avatar-legs">
+          <div class="avatar-leg"></div>
+          <div class="avatar-leg"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- 模态框 -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-dialog" role="dialog" aria-modal="true">
+    <div class="modal-titlebar">
+      <h2 id="modal-title">📜 关于我</h2>
+      <button class="modal-close" id="modal-close" aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-content" id="modal-content">
+      <!-- 由 JavaScript 动态填充 -->
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const avatar        = document.getElementById('avatar');
+  const overlay       = document.getElementById('modal-overlay');
+  const modalTitle    = document.getElementById('modal-title');
+  const modalContent  = document.getElementById('modal-content');
+  const modalClose    = document.getElementById('modal-close');
+  const scene         = document.getElementById('scene');
+
+  const menuItems     = document.querySelectorAll('.nav-menu > .nav-item, .submenu .nav-item');
+  const submenuParent = document.querySelector('.nav-item.has-submenu');
+  const submenu       = document.querySelector('.submenu');
+  const submenuArrow  = document.querySelector('.submenu-arrow');
+
+  let furniturePositions = {};
+  let sceneRectCache = {};
+
+  function updateFurniturePositions() {
+    const sr = scene.getBoundingClientRect();
+    sceneRectCache = sr;
+    const avatarW = 48, avatarH = 64;
+
+    const blackboard = document.getElementById('furniture-blackboard');
+    if (blackboard) {
+      const r = blackboard.getBoundingClientRect();
+      furniturePositions.blackboard = {
+        x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+        y: r.top - sr.top + r.height + 12
+      };
+    }
+
+    const bookshelf = document.getElementById('furniture-bookshelf');
+    if (bookshelf) {
+      const r = bookshelf.getBoundingClientRect();
+      furniturePositions.bookshelf = {
+        x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+        y: r.top - sr.top + r.height + 10
+      };
+    }
+
+    const desk = document.getElementById('furniture-desk');
+    if (desk) {
+      const r = desk.getBoundingClientRect();
+      furniturePositions.desk = {
+        x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+        y: r.top - sr.top - avatarH - 8
+      };
+    }
+
+    furniturePositions.center = {
+      x: sr.width / 2 - avatarW / 2,
+      y: sr.height / 2 + 50
+    };
+  }
+
+  /* ============================================================
+     模态框内容数据 — 谢奕彬简历
+     ============================================================ */
+  var modalData = {
+    about: {
+      title: '📜 关于我',
+      content: [
+        '<div style="text-align:center;margin-bottom:16px;">',
+          '<div style="font-size:48px;margin-bottom:8px;">🎓</div>',
+          '<h3 style="font-size:13px;">谢奕彬 (XIE YIBIN)</h3>',
+          '<p style="font-size:11px;color:var(--text-cream-dim);margin-top:4px;" lang="zh">⚔️ 华南理工大学 · 管理科学与工程博士 (2026 届毕业)</p>',
+        '</div>',
+        '<p lang="zh">本人是华南理工大学管理科学与工程博士研究生（2026 年毕业），研究方向为 <strong style="color:var(--accent-gold);">优化调度与质量监控</strong>，精通 <strong>数学建模、整数规划、凸优化</strong> 等理论与方法。</p>',
+        '<p lang="zh">目前已在 <strong style="color:var(--accent-gold);">EJOR、QTQM 等国际期刊</strong>发表相关学术论文 6 篇。研究期间，参与并协助导师完成了 <strong>国家杰出青年科学基金、国家自然科学基金</strong> 等纵向课题的研究工作。</p>',
+        '<p lang="zh">作为领队和核心成员参加多项横向课题实践，包括 <strong>三一重机</strong> 车间排产算法开发、<strong>粤海水务</strong> 泵站系统调度优化、<strong>中山三院</strong> 精神科 AIGC 模型搭建、<strong>信宜人民医院</strong> 县域医供体建设、杭氧运输车辆调度等。</p>',
+
+        '<h3>🎓 教育经历</h3>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">华南理工大学 · 工商管理学院</div>',
+          '<div class="job-meta" lang="zh">管理科学与工程（博士）　|　2022.09 - 2026.06</div>',
+        '</div>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">华南理工大学 · 数学学院</div>',
+          '<div class="job-meta" lang="zh">运筹学与控制论（硕士）　|　2019.09 - 2022.06</div>',
+        '</div>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">佛山大学 · 数学学院</div>',
+          '<div class="job-meta" lang="zh">数学与应用数学（本科）　|　2015.09 - 2019.06</div>',
+        '</div>',
+
+        '<h3>🏆 比赛获奖</h3>',
+        '<p lang="zh">🥉 华工优秀博士研究生“科研之星”奖学金 (2025)</p>',
+        '<p lang="zh">🥉 全国大学生数学竞赛(数学组) · 国家三等奖 (2018)</p>',
+        '<p lang="zh">🥉 大学生机械工程创新创意大赛研究生组 · 国家三等奖 (2023)</p>',
+        '<p lang="zh">🥉 泰迪杯数据挖掘挑战赛 · 国家三等奖 (2017)</p>',
+
+        '<h3>🛠️ 工具栈</h3>',
+        '<div class="skills-grid">',
+          '<div class="skill-tag">🐍 Python</div>',
+          '<div class="skill-tag">📈 R Studio</div>',
+          '<div class="skill-tag">📑 LaTeX</div>',
+          '<div class="skill-tag">📐 Gurobi</div>',
+        '</div>',
+
+        '<h3>🎯 兴趣爱好</h3>',
+        '<p lang="zh">🏀 篮球　🏃‍♂️ 跑步</p>',
+
+        '<div style="margin-top:16px;padding:10px;background:rgba(0,0,0,0.2);border:2px solid var(--ui-border);text-align:center;">',
+          '<span style="font-size:10px;color:var(--accent-gold);" lang="zh">「用数学建模，让世界更高效」</span>',
+        '</div>'
+      ].join('')
+    },
+
+    /* ===== 参与项目 — 企业横向课题 ===== */
+    resume: {
+      title: '🛠️ 项目经历',
+      content: [
+        '<h3>📋 参与科研项目</h3>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">国家自然科学基金 · 创新研究群体项目</div>',
+          '<div class="job-meta" lang="zh">数智化驱动的服务管理与创新（72321001）　|　2024.01 - 2028.12</div>',
+        '</div>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">国家杰出青年科学基金</div>',
+          '<div class="job-meta" lang="zh">排队经济学与服务运营管理（71925002）　|　2020.01 - 2024.12</div>',
+        '</div>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">合肥市哲学社会科学规划项目</div>',
+          '<div class="job-meta" lang="zh">基于图神经网络的合肥市量子科技技术创新机会识别研究(参与人排名第二)　|　2026.01 - 2026.10</div>',
+        '</div>',
+
+
+        '<h3>🏗️ 企业横向课题</h3>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🚜 三一重机 · 车间排产调度算法</div>',
+          '<div class="job-desc" lang="zh">建立整数规划模型并结合启发式算法求解，实现了生产计划的自动优化。显著提升了排产效率，减少了生产线空闲时间，并使得<strong style="color:var(--accent-gold);">交货期准时率提高到 95% 以上</strong>。同时开发了可视化分析工具，帮助管理人员直观地识别生产瓶颈并进行动态调整。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">📊 三一营销系统建设</div>',
+          '<div class="job-desc" lang="zh">完成了营销系统建设，实现四大核心功能：打通厂端与代理商数据，实时获取销售动态并智能引导；支持销售计划滚动更新，提升排程准确性；透明展示关键数据与计算过程；通过自动寻优生成销售额最大化方案。经实践验证，总销售额得到有效提升。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">⚡ 星星充电桩部署优化</div>',
+          '<div class="job-desc" lang="zh">结合预测与优化的交互式方法，建立充电需求预测模型和充电桩部署优化模型之间的动态反馈机制，实现了预测和规划的动态演进的协同机制。与传统静态规划方法相比，<strong style="color:var(--accent-gold);">平均服务半径缩小 15%，建设成本降低 20%</strong>，提升了用户满意度。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">💧 粤海水务 · 水网调度优化</div>',
+          '<div class="job-desc" lang="zh">基于数学建模和智能优化算法构建泵站系统调度优化模型。通过对历史水压、流量、用户用水等数据的深入分析，<strong>开发了一套自动化预测调度算法</strong>，实现了水压的智能预测和泵站运行方案的优化。系统显著提高了供水效率，并实现了能耗的大幅降低。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🛗 日立电梯 · 预防性维护</div>',
+          '<div class="job-desc" lang="zh">电梯维护管理系统以数据驱动为核心，集成了预测性维护、故障诊断和维修计划优化等功能模块。通过采集电梯运行数据，利用机器学习算法进行分析，实现了对关键部件寿命的精确预测，提高维护效率并降低成本。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🚚 杭氧 · 运输车辆调度管理</div>',
+          '<div class="job-desc" lang="zh">基于数学建模和智能优化算法构建了气体运输车辆调度管理系统，显著提高车辆、驾驶员的使用效率，<strong style="color:var(--accent-gold);">减少总运输成本 20%</strong>。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🏥 中山三院 · 精神科 AIGC 系统</div>',
+          '<div class="job-desc" lang="zh">针对传统病历记录耗时耗力、标准化程度低等痛点，基于 <strong>Whisper 语音大模型</strong> 与 <strong>Qwen 文本推理模型</strong>，构建智能病历生成系统，实现医患对话实时转写、病历结构化生成及医疗数据自动归档。经初步试验，<strong style="color:var(--accent-gold);">单份病历生成时间缩短至半分钟内，病历缺陷率控制在 3% 以下，诊断符合率达 95% 以上</strong>。</div>',
+        '</div>',
+
+      ].join('')
+    },
+
+    /* ===== 论文 — 总览 ===== */
+    projects: {
+      title: '📚 代表论文',
+      content: [
+        '<h3>📚 已发表论文 (6 篇)</h3>',
+        '<p lang="zh" style="font-size:12px;color:var(--text-cream-dim);">点击下方「阅读论文」按钮可跳转至论文原文链接。</p>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[1] A nonparametric online control chart for monitoring crowd density using relative density-ratio estimation</h4>',
+          '<div class="paper-meta" lang="zh">Zhou W, <strong>Xie Y</strong>, Zheng Z. <em>European Journal of Operational Research</em>, 2025, 325(1): 132-146. <strong style="color:var(--accent-gold);">(JCR Q1)</strong></div>',
+          '<a class="paper-link" href="https://www.sciencedirect.com/science/article/pii/S0377221725001997" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[2] A multivariate finite horizon production control chart for monitoring the food production process</h4>',
+          '<div class="paper-meta" lang="zh">Zhou W, <strong>Xie Y</strong>, Zheng Z. <em>Quality Technology &amp; Quantitative Management</em>, 2024: 1-26. <strong style="color:var(--accent-gold);">(JCR Q1)</strong></div>',
+          '<a class="paper-link" href="https://www.tandfonline.com/doi/abs/10.1080/16843703.2024.2442783" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[3] A fixed step distributed proximal gradient push-pull algorithm based on integral quadratic constraint</h4>',
+          '<div class="paper-meta" lang="zh">Gao W, <strong>Xie Y</strong>, Ren H. <em>Optimal Control Applications and Methods</em>, 2023, 44(5): 2693-2707. <strong style="color:var(--accent-gold);">(JCR Q1)</strong></div>',
+          '<a class="paper-link" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/oca.3000" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[4] 带事件触发机制的分布式量化随机无梯度投影算法</h4>',
+          '<div class="paper-meta" lang="zh"><strong>谢奕彬</strong>, 高文华. <em>控制理论与应用</em>, 2021, 38(8). <strong style="color:var(--accent-gold);">(EI · 国内控制领域三大刊)</strong></div>',
+          '<a class="paper-link" href="https://kns.cnki.net/kcms2/article/abstract?v=db-EbSzo3oilrhqst8FJbxkvHnGRm6o0K87dBtiaV9uH_MM-vfZbEg2pQFjH8i9TaVKbjaBA1qm8EKb8XKgNwMDUcY-MZr7VFocO0shtx0rU72o1f_j0QH65Gmkx59QlYBnAgrJ8X6GjELQLUFW8av80r1YgNgIVcjF4I9QIcZct5F58kzFmqw==&uniplatform=NZKPT&language=CHS" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[5] 基于 Bandit 反馈的自适应量化分布式在线镜像下降算法</h4>',
+          '<div class="paper-meta" lang="zh">谢俊如, 高文华, <strong>谢奕彬</strong>. <em>控制理论与应用</em>, 2023, 40(10). <strong style="color:var(--accent-gold);">(EI · 国内控制领域三大刊)</strong></div>',
+          '<a class="paper-link" href="https://kns.cnki.net/kcms2/article/abstract?v=db-EbSzo3oiKNlQ61EHT900ptDlNh__nLcdFFD2DYe0bVcqL2LDSf750tWwdFrutg4TXNYQ7jrK5JXfjvCcHgNrkx0oiITDOXShy6QJ3WfaatRZ7B70_hPs4_7u7WLNlynWRxFiY4qObpdckr4gqCOZvKWYXvAoDxaG-nYtcGx4EqEfRFJXYhw==&uniplatform=NZKPT&language=CHS" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>',
+
+        '<div class="paper-entry">',
+          '<h4 lang="zh">[6] Adaptive quantized online distributed stochastic mirror descent algorithm</h4>',
+          '<div class="paper-meta" lang="zh">Xie J, Gao W, <strong>Xie Y</strong>. <em>2022 37th Youth Academic Annual Conference of Chinese Association of Automation (CAC)</em>. IEEE, 2022: 671-676. <strong style="color:var(--accent-gold);">(重要学术会议)</strong></div>',
+          '<a class="paper-link" href="https://ieeexplore.ieee.org/abstract/document/10023617" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+
+    /* ===== 单篇论文详情 ===== */
+    'paper-1': {
+      title: '📘 论文 [1] · EJOR 2025',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📘</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">A nonparametric online control chart for monitoring crowd density using relative density-ratio estimation</h4>',
+          '<div class="paper-meta" lang="zh">Zhou W, <strong>Xie Y</strong>, Zheng Z.</div>',
+          '<div class="paper-meta" lang="zh"><em>European Journal of Operational Research</em>, 2025, 325(1): 132-146.</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">期刊等级：</strong>JCR Q1 · ABS 4* · 管理科学与运筹学顶刊</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>非参数控制图；人群密度监测</p>',
+          '<a class="paper-link" href="https://www.sciencedirect.com/science/article/pii/S0377221725001997" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+    'paper-2': {
+      title: '📗 论文 [2] · QTQM 2024',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📗</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">A multivariate finite horizon production control chart for monitoring the food production process</h4>',
+          '<div class="paper-meta" lang="zh">Zhou W, <strong>Xie Y</strong>, Zheng Z.</div>',
+          '<div class="paper-meta" lang="zh"><em>Quality Technology &amp; Quantitative Management</em>, 2024: 1-26.</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">期刊等级：</strong>JCR Q1</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>非参控制图；小批量监测</p>',
+          '<a class="paper-link" href="https://www.tandfonline.com/doi/abs/10.1080/16843703.2024.2442783" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+    'paper-3': {
+      title: '📕 论文 [3] · OCAM 2023',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📕</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">A fixed step distributed proximal gradient push-pull algorithm based on integral quadratic constraint</h4>',
+          '<div class="paper-meta" lang="zh">Gao W, <strong>Xie Y</strong>, Ren H.</div>',
+          '<div class="paper-meta" lang="zh"><em>Optimal Control Applications and Methods</em>, 2023, 44(5): 2693-2707.</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">期刊等级：</strong>JCR Q1</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>分布式优化；算法收敛性分析</p>',
+          '<a class="paper-link" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/oca.3000" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+    'paper-4': {
+      title: '📒 论文 [4] · 控制理论与应用',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📒</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">带事件触发机制的分布式量化随机无梯度投影算法</h4>',
+          '<div class="paper-meta" lang="zh"><strong>谢奕彬</strong>, 高文华.</div>',
+          '<div class="paper-meta" lang="zh"><em>控制理论与应用</em>, 2021, 38(8).</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">期刊等级：</strong>EI · 国内控制领域三大刊</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>分布式优化；量化通信</p>',
+          '<a class="paper-link" href="https://kns.cnki.net/kcms2/article/abstract?v=db-EbSzo3oilrhqst8FJbxkvHnGRm6o0K87dBtiaV9uH_MM-vfZbEg2pQFjH8i9TaVKbjaBA1qm8EKb8XKgNwMDUcY-MZr7VFocO0shtx0rU72o1f_j0QH65Gmkx59QlYBnAgrJ8X6GjELQLUFW8av80r1YgNgIVcjF4I9QIcZct5F58kzFmqw==&uniplatform=NZKPT&language=CHS" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+    'paper-5': {
+      title: '📔 论文 [5] · 控制理论与应用',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📔</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">基于 Bandit 反馈的自适应量化分布式在线镜像下降算法</h4>',
+          '<div class="paper-meta" lang="zh">谢俊如, 高文华, <strong>谢奕彬</strong>.</div>',
+          '<div class="paper-meta" lang="zh"><em>控制理论与应用</em>, 2023, 40(10).</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">期刊等级：</strong>EI · 国内控制领域三大刊</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>分布式优化；在线镜像下降优化</p>',
+          '<a class="paper-link" href="https://kns.cnki.net/kcms2/article/abstract?v=db-EbSzo3oiKNlQ61EHT900ptDlNh__nLcdFFD2DYe0bVcqL2LDSf750tWwdFrutg4TXNYQ7jrK5JXfjvCcHgNrkx0oiITDOXShy6QJ3WfaatRZ7B70_hPs4_7u7WLNlynWRxFiY4qObpdckr4gqCOZvKWYXvAoDxaG-nYtcGx4EqEfRFJXYhw==&uniplatform=NZKPT&language=CHS" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+    'paper-6': {
+      title: '📓 论文 [6] · CAC 2022',
+      content: [
+        '<div style="text-align:center;margin-bottom:12px;"><span style="font-size:48px;">📓</span></div>',
+        '<div class="paper-entry">',
+          '<h4 lang="zh">Adaptive quantized online distributed stochastic mirror descent algorithm</h4>',
+          '<div class="paper-meta" lang="zh">Xie J, Gao W, <strong>Xie Y</strong>.</div>',
+          '<div class="paper-meta" lang="zh"><em>2022 37th Youth Academic Annual Conference of Chinese Association of Automation</em>. IEEE, 2022: 671-676.</div>',
+          '<p style="margin-top:8px;" lang="zh"><strong style="color:var(--accent-gold);">会议等级：</strong>重要学术会议（IEEE）</p>',
+          '<p lang="zh"><strong style="color:var(--accent-gold);">研究方向：</strong>分布式优化；自适应量化</p>',
+          '<a class="paper-link" href="https://ieeexplore.ieee.org/abstract/document/10023617" target="_blank" rel="noopener">📝 阅读论文</a>',
+        '</div>'
+      ].join('')
+    },
+
+    /* ===== 专利 ===== */
+    patents: {
+      title: '📜 发明专利',
+      content: [
+        '<h3>📜 申请专利</h3>',
+        '<p lang="zh" style="font-size:12px;color:var(--text-cream-dim);margin-bottom:14px;">以下为参与申请的发明专利。</p>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🔧 一种基于可变权重的城市供水量深度学习预测方法及系统</div>',
+          '<div class="job-meta" lang="zh">发明人：刘凯,周文慧, <strong>谢奕彬</strong></div>',
+          '<div class="job-meta" lang="zh">申请号：202411925397.5 [P]　|　<span style="color:var(--accent-gold);">状态：已授权</span></div>',
+          '<div class="job-desc" lang="zh" style="margin-top:6px;">面向自来水厂的水需求预测方法，应用于<strong>粤海水务供水需求场景</strong>，显著提高供水需求的预测精度。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🔧 水泵机组的调度方法、装置、设备及介质</div>',
+          '<div class="job-meta" lang="zh">发明人：周文慧, 党媛媛, <strong>谢奕彬</strong>等</div>',
+          '<div class="job-meta" lang="zh">申请号：202510094842.6 [P]　|　<span style="color:var(--accent-gold);">状态：实质审查</span></div>',
+          '<div class="job-desc" lang="zh" style="margin-top:6px;">基于<strong>数优化调度优化方法<strong>，应用于<strong>粤海水务水网调度场景</strong>，可实现水压智能预测与泵站运行方案优化，显著提高供水效率并降低能耗。</div>',
+        '</div>',
+
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🔧一种基于水泵并联运行特性曲线的优化调度方法及系统</div>',
+          '<div class="job-meta" lang="zh">发明人： 刘凯，王艺颖 <strong>谢奕彬</strong>等</div>',
+          '<div class="job-meta" lang="zh">申请号：202411990420.9 [P]　|　<span style="color:var(--accent-gold);">状态：实质审查</span></div>',
+          '<div class="job-desc" lang="zh" style="margin-top:6px;">基于 <strong>组合优化方法</strong>，应用于<strong>粤海水务泵站系统调度场景</strong>, 实现供水泵站节能减耗和运行稳定性的提升。</div>',
+        '</div>',
+        
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">🏥 医疗病历文档的生成方法、装置、设备及介质</div>',
+          '<div class="job-meta" lang="zh">发明人：周文慧, 党媛媛, <strong>谢奕彬</strong></div>',
+          '<div class="job-meta" lang="zh">申请号：202411990420.9 [P]　|　<span style="color:var(--accent-gold);">状态：实质审查</span></div>',
+          '<div class="job-desc" lang="zh" style="margin-top:6px;">基于 <strong>Whisper 语音大模型</strong> 与 <strong>Qwen 文本推理模型</strong>，实现医患对话实时转写、病历结构化生成与医疗数据自动归档，应用于<strong>中山三院</strong>精神科 AIGC 系统。</div>',
+        '</div>'
+      ].join('')
+    },
+
+    contact: {
+      title: '✉️ 联系我',
+      content: [
+        '<div style="text-align:center;margin-bottom:16px;">',
+          '<span style="font-size:48px;">📬</span>',
+          '<p style="margin-top:8px;font-size:11px;color:var(--text-cream-dim);" lang="zh">欢迎通过以下方式联系我</p>',
+        '</div>',
+        '<div class="contact-links">',
+          '<a href="https://github.com/XIe-Yibin" target="_blank" rel="noopener" class="contact-link">',
+            '<i class="fab fa-github"></i>',
+            '<span>github.com/XIe-Yibin</span>',
+          '</a>',
+          '<a href="mailto:772934638@qq.com" target="_blank" rel="noopener" class="contact-link">',
+            '<i class="fas fa-envelope"></i>',
+            '<span>772934638@qq.com</span>',
+          '</a>',
+          '<div class="contact-link" style="cursor:default;">',
+            '<i class="fas fa-university"></i>',
+            '<span lang="zh">华南理工大学 · 工商管理学院</span>',
+          '</div>',
+        '</div>',
+        '<div style="margin-top:14px;text-align:center;font-size:10px;color:var(--text-cream-dim);" lang="zh">',
+          '⏳ 通常会尽快回复您',
+        '</div>'
+      ].join('')
+    }
+  };
+
+  var furnitureTargetMap = {
+    blackboard: 'resume',
+    bookshelf: 'projects',
+    desk: 'contact'
+  };
+
+  var isMovingHorizontal = false;
+  var isMovingVertical = false;
+  var isAnimating = false;
+  var moveTimeoutId = null;
+  var pendingOpenTarget = null;
+  var avatarFacing = 'right';
+
+  var HORIZONTAL_TIMEOUT = 1200;
+  var VERTICAL_TIMEOUT = 1000;
+
+  function getAvatarPos() {
+    return {
+      x: parseFloat(avatar.style.left) || 0,
+      y: parseFloat(avatar.style.top) || 0
+    };
+  }
+
+  function getTargetPosition(furnitureKey) {
+    if (furniturePositions[furnitureKey]) {
+      return furniturePositions[furnitureKey];
+    }
+    var furnitureId = 'furniture-' + furnitureKey;
+    var el = document.getElementById(furnitureId);
+    if (!el) {
+      return furniturePositions.center || { x: 200, y: 300 };
+    }
+    var sr = scene.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+    var avatarW = 48, avatarH = 64;
+    var pos = {
+      x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+      y: r.top - sr.top - avatarH - 10
+    };
+    if (furnitureKey === 'blackboard' || furnitureKey === 'bookshelf') {
+      pos.y = r.top - sr.top + r.height + 12;
+    }
+    return pos;
+  }
+
+  function setFacing(targetX) {
+    var currentX = getAvatarPos().x;
+    if (targetX < currentX) {
+      avatar.classList.add('facing-left');
+      avatar.classList.remove('facing-right');
+      avatarFacing = 'left';
+    } else if (targetX > currentX) {
+      avatar.classList.add('facing-right');
+      avatar.classList.remove('facing-left');
+      avatarFacing = 'right';
+    }
+  }
+
+  function clearMoveState() {
+    if (moveTimeoutId) {
+      clearTimeout(moveTimeoutId);
+      moveTimeoutId = null;
+    }
+    isMovingHorizontal = false;
+    isMovingVertical = false;
+    isAnimating = false;
+    avatar.classList.remove('walking-horizontal', 'walking-vertical');
+    avatar.classList.add('idle');
+    avatar.style.transition = 'left 0.6s ease-in-out, top 0.5s ease-in-out';
+  }
+
+  function onMoveComplete() {
+    clearMoveState();
+    if (pendingOpenTarget) {
+      openModal(pendingOpenTarget);
+      pendingOpenTarget = null;
+    } else {
+      checkFurnitureProximity();
+    }
+  }
+
+  function findNearestFurniture() {
+    var pos = getAvatarPos();
+    var threshold = 65;
+    var furnitureKeys = ['blackboard', 'bookshelf', 'desk'];
+    var nearest = null;
+    var minDist = threshold;
+
+    furnitureKeys.forEach(function(key) {
+      var targetPos = furniturePositions[key];
+      if (!targetPos) return;
+      var dx = pos.x - targetPos.x;
+      var dy = pos.y - targetPos.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < minDist) {
+        minDist = dist;
+        nearest = key;
+      }
+    });
+    return nearest;
+  }
+
+  function checkFurnitureProximity() {
+    if (overlay.classList.contains('open')) return;
+    var nearest = findNearestFurniture();
+    if (nearest) {
+      var targetKey = furnitureTargetMap[nearest];
+      if (targetKey && modalData[targetKey]) {
+        setTimeout(function() {
+          openModal(targetKey);
+        }, 300);
+      }
+    }
+  }
+
+  function startVerticalMove(targetY) {
+    var currentPos = getAvatarPos();
+    if (currentPos.y === targetY) {
+      onMoveComplete();
+      return;
+    }
+    isMovingVertical = true;
+    isMovingHorizontal = false;
+    avatar.classList.remove('walking-horizontal');
+    avatar.classList.add('walking-vertical');
+    avatar.style.transition = 'left 0s, top 0.5s ease-in-out';
+    avatar.style.top = targetY + 'px';
+
+    var onVertEnd = function(e) {
+      if (e.propertyName === 'top') {
+        avatar.removeEventListener('transitionend', onVertEnd);
+        if (moveTimeoutId) {
+          clearTimeout(moveTimeoutId);
+          moveTimeoutId = null;
+        }
+        onMoveComplete();
+      }
+    };
+    avatar.addEventListener('transitionend', onVertEnd);
+    moveTimeoutId = setTimeout(function() {
+      avatar.removeEventListener('transitionend', onVertEnd);
+      if (isMovingVertical) {
+        onMoveComplete();
+      }
+    }, VERTICAL_TIMEOUT);
+  }
+
+  function startOrthogonalMove(targetX, targetY) {
+    var currentPos = getAvatarPos();
+    var needHorizontal = (currentPos.x !== targetX);
+    var needVertical = (currentPos.y !== targetY);
+    setFacing(targetX);
+
+    if (!needHorizontal && !needVertical) {
+      onMoveComplete();
+      return;
+    }
+    isAnimating = true;
+
+    if (needHorizontal) {
+      isMovingHorizontal = true;
+      avatar.classList.remove('idle');
+      avatar.classList.add('walking-horizontal');
+      avatar.style.transition = 'left 0.6s ease-in-out, top 0s';
+      avatar.style.left = targetX + 'px';
+
+      var onHorizEnd = function(e) {
+        if (e.propertyName === 'left') {
+          avatar.removeEventListener('transitionend', onHorizEnd);
+          if (moveTimeoutId) {
+            clearTimeout(moveTimeoutId);
+            moveTimeoutId = null;
+          }
+          startVerticalMove(targetY);
+        }
+      };
+      avatar.addEventListener('transitionend', onHorizEnd);
+      moveTimeoutId = setTimeout(function() {
+        avatar.removeEventListener('transitionend', onHorizEnd);
+        if (isMovingHorizontal) {
+          isMovingHorizontal = false;
+          startVerticalMove(targetY);
+        }
+      }, HORIZONTAL_TIMEOUT);
+    } else {
+      startVerticalMove(targetY);
+    }
+  }
+
+  function openModal(targetKey) {
+    var data = modalData[targetKey];
+    if (!data) return;
+    modalTitle.textContent = data.title;
+    modalContent.innerHTML = data.content;
+    modalContent.scrollTop = 0;
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleMenuClick(item) {
+    if (isAnimating) return;
+    if (item.classList.contains('has-submenu')) return;
+
+    var target    = item.dataset.target;
+    var furniture = item.dataset.furniture;
+
+    document.querySelectorAll('.nav-item').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    item.classList.add('active');
+    if (item.closest('.submenu')) {
+      var parent = document.querySelector('.has-submenu');
+      if (parent) parent.classList.add('active');
+    }
+    if (moveTimeoutId) {
+      clearTimeout(moveTimeoutId);
+      moveTimeoutId = null;
+    }
+    avatar.classList.remove('walking-horizontal', 'walking-vertical');
+
+    if (furniture) {
+      pendingOpenTarget = target || furnitureTargetMap[furniture];
+      var pos = getTargetPosition(furniture);
+      startOrthogonalMove(pos.x, pos.y);
+    } else {
+      openModal(target);
+    }
+  }
+
+  function toggleSubmenu() {
+    submenu.classList.toggle('open');
+    if (submenuArrow) {
+      submenuArrow.textContent = submenu.classList.contains('open') ? '▾' : '▸';
+    }
+  }
+
+  menuItems.forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.stopPropagation();
+      handleMenuClick(this);
+    });
+  });
+
+  scene.addEventListener('click', function(e) {
+    if (isAnimating || overlay.classList.contains('open') || isMovingHorizontal || isMovingVertical) {
+      return;
+    }
+    var furnitureEl = e.target.closest(
+      '#furniture-blackboard, #furniture-bookshelf, #furniture-desk, ' +
+      '.window, .deco-sofa, .deco-plant, .deco-boxes, ' +
+      '.wall-clock, .framed-picture, .center-rug'
+    );
+    if (furnitureEl) {
+      var furnitureKey = null;
+      if (furnitureEl.id === 'furniture-blackboard') furnitureKey = 'blackboard';
+      else if (furnitureEl.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
+      else if (furnitureEl.id === 'furniture-desk') furnitureKey = 'desk';
+      if (!furnitureKey) {
+        var parent = furnitureEl.closest('#furniture-blackboard, #furniture-bookshelf, #furniture-desk');
+        if (parent) {
+          if (parent.id === 'furniture-blackboard') furnitureKey = 'blackboard';
+          else if (parent.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
+          else if (parent.id === 'furniture-desk') furnitureKey = 'desk';
+        }
+      }
+      if (furnitureKey) {
+        e.stopPropagation();
+        document.querySelectorAll('.nav-item').forEach(function(el) {
+          el.classList.remove('active');
+        });
+        pendingOpenTarget = furnitureTargetMap[furnitureKey];
+        var pos = getTargetPosition(furnitureKey);
+        startOrthogonalMove(pos.x, pos.y);
+        return;
+      }
+    }
+    var sr = scene.getBoundingClientRect();
+    var clickX = e.clientX - sr.left;
+    var clickY = e.clientY - sr.top;
+    var avatarW = 48, avatarH = 64;
+    var walkableTop = 285;
+    var targetX = Math.max(0, Math.min(sr.width - avatarW, clickX - avatarW / 2));
+    var targetY = Math.max(walkableTop, Math.min(sr.height - avatarH, clickY - avatarH / 2));
+    pendingOpenTarget = null;
+    startOrthogonalMove(targetX, targetY);
+  });
+
+  if (submenuParent) {
+    submenuParent.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleSubmenu();
+    });
+  }
+
+  modalClose.addEventListener('click', closeModal);
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) closeModal();
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+  });
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function() {
+      updateFurniturePositions();
+    }, 200);
+  });
+
+  function boot() {
+    avatar.style.transition = 'none';
+    updateFurniturePositions();
+    var center = furniturePositions.center;
+    if (center) {
+      avatar.style.left = center.x + 'px';
+      avatar.style.top = center.y + 'px';
+    }
+    void avatar.offsetHeight;
+    avatar.style.transition = 'left 0.6s ease-in-out, top 0.5s ease-in-out';
+    avatar.classList.add('idle');
+    console.log('🎮 谢奕彬 - RPG 像素简历已加载！');
+  }
+
+  if (document.readyState === 'complete') {
+    setTimeout(boot, 50);
+  } else {
+    window.addEventListener('load', function() {
+      setTimeout(boot, 50);
+    });
+  }
+
+})();
+</script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0261de5ff6609e4',t:'MTc3OTg5NjQxMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
