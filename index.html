@@ -767,8 +767,12 @@ html, body {
   max-width: 100%;
   height: 320px;
   z-index: 5;
-  cursor: default;
+  cursor: pointer;
   pointer-events: auto;
+}
+.furniture-blackboard:hover {
+  filter: brightness(1.08);
+  transition: filter 0.2s;
 }
 
 .furniture-blackboard::before {
@@ -1183,7 +1187,12 @@ html, body {
   display: flex;
   flex-direction: column;
   padding: 0;
-  cursor: default;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.furniture-bookshelf:hover {
+  filter: brightness(1.08);
+  transition: filter 0.2s;
 }
 .bookshelf-label {
   font-size: 8px;
@@ -1279,8 +1288,12 @@ html, body {
   align-items: center;
   justify-content: flex-end;
   padding: 0;
-  cursor: default;
+  cursor: pointer;
   pointer-events: auto;
+}
+.furniture-desk:hover {
+  filter: brightness(1.08);
+  transition: filter 0.2s;
 }
 .furniture-desk::before {
   content: '';
@@ -1492,6 +1505,12 @@ html, body {
   font-size: 220px;
   filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.3));
   opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.deco-sofa:hover {
+  filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.3)) brightness(1.15);
+  transition: filter 0.2s;
 }
 .deco-sofa .deco-shadow {
   bottom: -6px;
@@ -1831,6 +1850,53 @@ html, body {
 
 .avatar.facing-left  .avatar-flipper { transform: scaleX(-1); }
 .avatar.facing-right .avatar-flipper { transform: scaleX(1); }
+
+/* ============================================================
+   坐姿状态 — 坐在沙发上喝咖啡
+   ============================================================ */
+.avatar.sitting {
+  filter: drop-shadow(0 0 18px rgba(212,168,75,0.35));
+  transition: filter 0.3s;
+}
+.avatar.sitting .avatar-legs {
+  display: none;
+}
+.avatar.sitting .avatar-sprite {
+  animation: sitIdle 2.8s ease-in-out infinite;
+}
+.avatar.sitting .avatar-shadow {
+  width: 30px;
+  height: 4px;
+  left: 12px;
+  bottom: -2px;
+  opacity: 0.35;
+  animation: none;
+}
+@keyframes sitIdle {
+  0%, 100% { transform: translateY(6px) rotate(0deg); }
+  40% { transform: translateY(4px) rotate(1.5deg); }
+  70% { transform: translateY(6px) rotate(-0.5deg); }
+}
+.avatar-coffee {
+  position: absolute;
+  top: 28px;
+  right: 0px;
+  font-size: 18px;
+  z-index: 20;
+  display: none;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  animation: coffeeSteam 2.5s ease-in-out infinite;
+}
+.avatar.sitting .avatar-coffee {
+  display: block;
+}
+@keyframes coffeeSteam {
+  0%, 100% { transform: translateY(0) rotate(-3deg); opacity: 1; }
+  25% { transform: translateY(-4px) rotate(-6deg); opacity: 0.9; }
+  50% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  75% { transform: translateY(-3px) rotate(4deg); opacity: 0.9; }
+}
 
 .modal-overlay {
   position: fixed; inset: 0;
@@ -2356,8 +2422,9 @@ html, body {
 
   .deco-sofa {
     left: 30%;
+    right: auto;
     bottom: 15px;
-    font-size: 40px;
+    font-size: 100px;
   }
   .deco-plant {
     right: 8px;
@@ -2612,9 +2679,10 @@ html, body {
 
   /* 缩小装饰，避免拥护 */
   .deco-sofa {
-    left: 42%;
+    left: 40%;
+    right: auto;
     bottom: 10px;
-    font-size: 28px;
+    font-size: 70px;
   }
   .deco-plant {
     right: 5px;
@@ -2783,6 +2851,7 @@ html, body {
         <span class="nav-icon">✉️</span>
         <span lang="zh">联系我</span>
       </div>
+
     </nav>
 
     <div class="sidebar-footer">
@@ -2932,7 +3001,7 @@ html, body {
       </div>
     </div>
 
-    <div class="deco-sofa">
+    <div class="deco-sofa" id="furniture-sofa">
       🛋️
       <div class="deco-shadow"></div>
     </div>
@@ -2991,6 +3060,7 @@ html, body {
         </div>
       </div>
       </div>
+      <div class="avatar-coffee">☕</div>
     </div>
   </main>
 </div>
@@ -3092,6 +3162,15 @@ html, body {
       furniturePositions.desk = {
         x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
         y: r.top - sr.top - avatarH - 8
+      };
+    }
+
+    const sofa = document.getElementById('furniture-sofa');
+    if (sofa) {
+      const r = sofa.getBoundingClientRect();
+      furniturePositions.sofa = {
+        x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+        y: r.top - sr.top + (r.height * 0.75) - (avatarH / 2)
       };
     }
 
@@ -3381,6 +3460,31 @@ html, body {
       ].join('')
     },
 
+    coffee: {
+      title: '☕ 休息一下',
+      content: [
+        '<div style="text-align:center;margin-bottom:16px;">',
+          '<span style="font-size:64px;">☕</span>',
+          '<h3 style="font-size:13px;margin-top:8px;" lang="zh">博士生涯短暂休息</h3>',
+        '</div>',
+        '<div style="background:rgba(0,0,0,0.2);border:2px solid var(--ui-border);padding:16px;text-align:center;margin-bottom:12px;">',
+          '<p lang="zh" style="font-size:14px;color:var(--accent-gold);margin-bottom:8px;">「科研是一场马拉松，不是短跑冲刺」</p>',
+          '<p lang="zh" style="font-size:12px;color:var(--text-cream-dim);">停下来喝杯咖啡 ☕，才能走得更远 🚀</p>',
+        '</div>',
+        '<div class="job-entry">',
+          '<div class="job-title" lang="zh">☕ 今日咖啡状态</div>',
+          '<div class="job-desc" lang="zh">',
+            '<p>🥤 已消耗咖啡：<strong style="color:var(--accent-gold);">∞ 杯</strong></p>',
+            '<p>📝 论文写到第 <strong style="color:var(--accent-gold);">6</strong> 篇</p>',
+            '<p>💪 科研热情：<strong style="color:var(--accent-gold);">永远满格</strong></p>',
+          '</div>',
+        '</div>',
+        '<div style="margin-top:14px;padding:10px;background:rgba(0,0,0,0.2);border:2px solid var(--ui-border);text-align:center;">',
+          '<span style="font-size:10px;color:var(--accent-gold);" lang="zh">🎯 用数学建模，让世界更高效 — 但也要记得休息 😄</span>',
+        '</div>'
+      ].join('')
+    },
+
     contact: {
       title: '✉️ 联系我',
       content: [
@@ -3412,7 +3516,8 @@ html, body {
   var furnitureTargetMap = {
     blackboard: 'resume',
     bookshelf: 'projects',
-    desk: 'contact'
+    desk: 'contact',
+    sofa: 'coffee'
   };
 
   var isMovingHorizontal = false;
@@ -3486,7 +3591,11 @@ html, body {
   function onMoveComplete() {
     clearMoveState();
     if (pendingOpenTarget) {
-      openModal(pendingOpenTarget);
+      if (pendingOpenTarget === 'coffee') {
+        sitOnSofa();
+      } else {
+        openModal(pendingOpenTarget);
+      }
       pendingOpenTarget = null;
     } else {
       checkFurnitureProximity();
@@ -3559,7 +3668,28 @@ html, body {
     }, VERTICAL_TIMEOUT);
   }
 
+  function standUp() {
+    if (!avatar.classList.contains('sitting')) return;
+    avatar.classList.remove('sitting');
+    avatar.classList.add('idle');
+  }
+
+  function sitOnSofa() {
+    var sofa = document.getElementById('furniture-sofa');
+    if (!sofa) return;
+    var sr = scene.getBoundingClientRect();
+    var r = sofa.getBoundingClientRect();
+    var avatarW = 48, avatarH = 64;
+    // 角色坐在沙发正中央，下移使身体落在坐垫位置
+    avatar.style.transition = 'left 0.35s ease, top 0.35s ease';
+    avatar.style.left = (r.left - sr.left + (r.width / 2) - (avatarW / 2)) + 'px';
+    avatar.style.top = (r.top - sr.top + (r.height * 0.75) - (avatarH / 2)) + 'px';
+    avatar.classList.remove('idle');
+    avatar.classList.add('sitting');
+  }
+
   function startOrthogonalMove(targetX, targetY) {
+    standUp();
     var currentPos = getAvatarPos();
     var needHorizontal = (currentPos.x !== targetX);
     var needVertical = (currentPos.y !== targetY);
@@ -3675,12 +3805,14 @@ html, body {
       if (furnitureEl.id === 'furniture-blackboard') furnitureKey = 'blackboard';
       else if (furnitureEl.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
       else if (furnitureEl.id === 'furniture-desk') furnitureKey = 'desk';
+      else if (furnitureEl.id === 'furniture-sofa') furnitureKey = 'sofa';
       if (!furnitureKey) {
-        var parent = furnitureEl.closest('#furniture-blackboard, #furniture-bookshelf, #furniture-desk');
+        var parent = furnitureEl.closest('#furniture-blackboard, #furniture-bookshelf, #furniture-desk, #furniture-sofa');
         if (parent) {
           if (parent.id === 'furniture-blackboard') furnitureKey = 'blackboard';
           else if (parent.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
           else if (parent.id === 'furniture-desk') furnitureKey = 'desk';
+          else if (parent.id === 'furniture-sofa') furnitureKey = 'sofa';
         }
       }
       if (furnitureKey) {
