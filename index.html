@@ -211,8 +211,13 @@ html, body {
 .nav-item:nth-child(2) { animation-delay: 0.2s; }
 .nav-item:nth-child(3) { animation-delay: 0.3s; }
 .nav-item:nth-child(4) { animation-delay: 0.4s; }
-.submenu .nav-item:nth-child(1) { animation-delay: 0.35s; }
-.submenu .nav-item:nth-child(2) { animation-delay: 0.4s; }
+.nav-item:nth-child(5) { animation-delay: 0.5s; }
+.submenu .nav-item:nth-child(1) { animation-delay: 0.15s; }
+.submenu .nav-item:nth-child(2) { animation-delay: 0.25s; }
+.submenu .nav-item:nth-child(3) { animation-delay: 0.35s; }
+.submenu .nav-item:nth-child(4) { animation-delay: 0.45s; }
+.submenu .nav-item:nth-child(5) { animation-delay: 0.55s; }
+.submenu .nav-item:nth-child(6) { animation-delay: 0.65s; }
 .nav-item:hover {
   background: var(--sidebar-hover);
   border-left-color: var(--accent-gold);
@@ -750,14 +755,6 @@ html, body {
   z-index: 1;
 }
 
-.light-beam {
-  display: none !important;
-}
-@keyframes beamPulse {
-  0%, 100% { opacity: 0.85; }
-  50% { opacity: 1; }
-}
-
 .furniture-blackboard {
   position: relative;
   grid-area: blackboard;
@@ -1166,6 +1163,79 @@ html, body {
   height: 5px;
 }
 
+/* 专利卷轴 — 黑板右侧小杆子挂着 */
+.deco-patent-scroll {
+  position: absolute;
+  right: -28px;
+  top: 100px;
+  z-index: 6;
+  cursor: pointer;
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 48px;
+}
+.deco-patent-scroll:hover .patent-emoji {
+  transform: scale(1.18);
+  text-shadow: 0 0 18px #D4A84B, 0 0 36px rgba(212, 168, 75, 0.5);
+}
+/* 杆子 — 从黑板右侧伸出来 */
+.deco-patent-scroll .patent-rod {
+  display: block;
+  position: absolute;
+  top: 8px;
+  left: -32px;
+  width: 52px;
+  height: 4px;
+  background: linear-gradient(to right, #4E342E, #8D6E63, #A1887F);
+  border-radius: 3px;
+  border: 1px solid #3E2723;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+/* 杆子末端小圆头 */
+.deco-patent-scroll .patent-rod::after {
+  content: '';
+  position: absolute;
+  right: -4px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  background: radial-gradient(circle, #A1887F, #5D4037);
+  border-radius: 50%;
+  border: 1px solid #3E2723;
+}
+/* 挂绳 */
+.deco-patent-scroll .patent-thread {
+  display: block;
+  width: 2px;
+  height: 10px;
+  background: #8D6E63;
+  margin-top: 12px;
+  pointer-events: none;
+  z-index: 1;
+}
+/* 卷轴图标 */
+.deco-patent-scroll .patent-emoji {
+  display: block;
+  font-size: 48px;
+  line-height: 1;
+  text-shadow: 0 0 12px rgba(212, 168, 75, 0.7), 0 0 28px rgba(212, 168, 75, 0.3);
+  filter: sepia(0.5) hue-rotate(-8deg) saturate(3) brightness(1.25) drop-shadow(2px 2px 0 rgba(0,0,0,0.4));
+  transition: filter 0.25s, transform 0.25s;
+  animation: patentFloat 2.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.deco-patent-scroll .deco-shadow {
+  display: none;
+}
+@keyframes patentFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 .furniture-bookshelf {
   position: relative;
   grid-area: bookshelf;
@@ -1483,18 +1553,6 @@ html, body {
 }
 .deco-plant .deco-shadow {
   bottom: -8px;
-}
-
-.deco-boxes {
-  display: none !important;
-}
-.deco-boxes .box-stack {
-  display: flex;
-  gap: 2px;
-  line-height: 1;
-}
-.deco-boxes .deco-shadow {
-  bottom: -6px;
 }
 
 .deco-sofa {
@@ -2169,55 +2227,48 @@ html, body {
 .menu-btn {
   display: none; /* 默认隐藏，在 768px 以下显示 */
   position: absolute;
-  top: 15px;
-  left: 15px;
-  z-index: 30;
-  background: var(--sidebar-bg);
-  border: 3px solid var(--accent-gold);
-  color: var(--accent-gold);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-  box-shadow: 3px 3px 0 var(--ui-border);
-  align-items: center;
-  gap: 8px;
-  transition: all 0.1s;
-  user-select: none;
-}
-.menu-btn:hover {
+  top: var(--sidebar-close-btn-size, 32px);
+  right: var(--sidebar-close-btn-size, 8px);
+  width: var(--sidebar-close-btn-size, 32px);
+  height: var(--sidebar-close-btn-size, 32px);
   background: var(--sidebar-hover);
-  color: var(--accent-glow);
-  border-color: var(--accent-glow);
-}
-.menu-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--ui-border);
+  border: 1px solid var(--ui-border);
+  border-radius: 4px;
+  color: var(--accent-gold);
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  display: none;
+  transition: background 0.2s;
 }
 .menu-btn-text {
-  font-family: 'Microsoft YaHei', sans-serif;
-  font-weight: bold;
+  display: none;
+}
+.menu-btn-icon {
+  font-size: 18px;
+  line-height: 1;
 }
 
 .sidebar-close-btn {
-  display: none; /* 默认隐藏，在 768px 以下显示 */
   position: absolute;
-  top: 12px;
-  right: 12px;
-  background: var(--sidebar-bg);
-  border: 2px solid var(--accent-gold);
+  top: var(--sidebar-close-btn-size, 32px);
+  right: var(--sidebar-close-btn-size, 8px);
+  width: var(--sidebar-close-btn-size, 32px);
+  height: var(--sidebar-close-btn-size, 32px);
+  background: var(--sidebar-hover);
+  border: 1px solid var(--ui-border);
+  border-radius: 4px;
   color: var(--accent-gold);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 10px;
-  width: 24px;
-  height: 24px;
-  display: flex;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 10;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  display: none;
   box-shadow: 2px 2px 0 var(--ui-border);
-  z-index: 10;
-  transition: all 0.1s;
+  transition: background 0.2s, all 0.1s;
 }
 .sidebar-close-btn:hover {
   background: #E74C3C;
@@ -2386,6 +2437,30 @@ html, body {
     transform: scale(0.85);
     transform-origin: bottom right;
   }
+  .deco-patent-scroll {
+    right: -18px;
+    top: 70px;
+    width: 36px;
+  }
+  .deco-patent-scroll .patent-rod {
+    left: -22px;
+    width: 36px;
+    height: 3px;
+    top: 6px;
+  }
+  .deco-patent-scroll .patent-rod::after {
+    right: -3px;
+    top: -1.5px;
+    width: 4px;
+    height: 4px;
+  }
+  .deco-patent-scroll .patent-thread {
+    height: 7px;
+    margin-top: 9px;
+  }
+  .deco-patent-scroll .patent-emoji {
+    font-size: 36px;
+  }
 
   .furniture-bookshelf {
     width: 135px;
@@ -2402,12 +2477,6 @@ html, body {
     right: 20px;
     top: 45px;
     border-width: 6px;
-  }
-  .light-beam {
-    width: 280px;
-    height: 360px;
-    right: 25px;
-    top: 45px;
   }
 
   .floor-left {
@@ -2431,29 +2500,20 @@ html, body {
     bottom: 8px;
     font-size: 26px;
   }
-  .deco-boxes {
-    left: calc(50% + 30px);
-    bottom: 18px;
-    font-size: 20px;
-  }
 
   .wall-clock {
     left: calc(50% - 100px);
-    top: 60px;
-    width: 40px;
-    height: 40px;
+    top: 65px;
+    width: 38px;
+    height: 38px;
     border-width: 4px;
   }
-  .wall-clock::before {
-    height: 10px;
-  }
-  .wall-clock::after {
-    height: 14px;
-  }
+  .wall-clock::before { height: 10px; }
+  .wall-clock::after { height: 14px; }
 
   .framed-picture {
     right: 170px;
-    top: 38px;
+    top: 50px;
     width: 55px;
     height: 40px;
     border-width: 4px;
@@ -2461,279 +2521,25 @@ html, body {
 
   .center-rug {
     left: calc(50% - 100px);
-    top: 280px;
+    top: 245px;
     width: 200px;
-    height: 95px;
+    height: 80px;
   }
 
-  .wainscoting {
-    top: 168px;
-    height: 55px;
-  }
-  .baseboard {
-    top: 223px;
-  }
-  .wall-pillar {
-    width: 10px;
-  }
-
-  .ceiling-lamp {
-    left: calc(50% - 10px);
-  }
+  /* 顶灯 */
+  .ceiling-lamp-wire { height: 30px; }
   .ceiling-lamp-shade {
     border-left-width: 10px;
     border-right-width: 10px;
-    border-top-width: 14px;
-    top: 32px;
+    border-top-width: 16px;
+    top: 30px;
   }
-  .ceiling-lamp-wire {
-    height: 32px;
-  }
-  .ceiling-lamp-bulb {
-    top: 46px;
-    width: 6px;
-    height: 6px;
-  }
+  .ceiling-lamp-bulb { top: 46px; width: 6px; height: 6px; }
   .lamp-glow {
     width: 220px;
     height: 300px;
     left: calc(50% - 110px);
-    top: 40px;
-  }
-
-  /* 弹窗调整 */
-  .modal-dialog {
-    width: 92vw;
-    max-height: 85vh;
-  }
-  .modal-content {
-    padding: 16px 20px;
-  }
-}
-
-/* ============================================================
-   更小屏幕适配 (Mobile Small, e.g., <= 480px)
-   ============================================================ */
-@media (max-width: 480px) {
-  /* 进一步缩小家具与装饰，以在超窄屏幕上完美并排显示，保留精致画风 */
-  .floor-furniture {
-    top: 40px;
-    padding: 0 10px 20px;
-  }
-  
-  .furniture-blackboard {
-    width: 130px;
-    height: 175px;
-  }
-  .furniture-blackboard .blackboard-surface {
-    width: 118px;
-    height: 108px;
-    left: 6px;
-    border-width: 3px;
-  }
-  .furniture-blackboard::after {
-    top: 102px;
-    height: 73px;
-    left: 16px;
-    width: 6px;
-  }
-  .bb-leg-right {
-    top: 102px;
-    height: 73px;
-    right: 16px;
-    width: 6px;
-  }
-  .bb-topbar {
-    top: 92px;
-    width: 16px;
-    height: 5px;
-  }
-  .bb-crossbar {
-    top: 152px;
-    left: 36px;
-    width: 58px;
-    height: 4px;
-  }
-  .bb-foot-left {
-    left: 10px;
-    width: 8px;
-    height: 5px;
-  }
-  .bb-foot-right {
-    right: 10px;
-    width: 8px;
-    height: 5px;
-  }
-  
-  /* 隐藏黑板上部分细小纸片，避免文字拥挤 */
-  .bb-paper-1 {
-    width: 44px;
-    height: 26px;
-    top: 6px;
-    left: 5px;
-    font-size: 4px;
-  }
-  .bb-paper-2 {
-    width: 40px;
-    height: 24px;
-    top: 9px;
-    right: 5px;
-    font-size: 4px;
-  }
-  .bb-paper-3 {
-    width: 46px;
-    height: 22px;
-    bottom: 5px;
-    left: 28px;
-    font-size: 4px;
-  }
-  .bb-paper-4, .bb-paper-5, .bb-paper-6, .deco-bb-plant {
-    display: none;
-  }
-
-  .furniture-bookshelf {
-    width: 95px;
-    height: 135px;
-    border-width: 5px;
-    justify-self: end;
-    margin-top: 30px;
-  }
-  .bookshelf-label {
-    font-size: 6px;
-    padding: 4px 0 2px;
-  }
-  .bookshelf-interior {
-    gap: 3px;
-    padding: 2px 4px 4px;
-  }
-  .book {
-    width: 6px;
-  }
-
-  .furniture-desk {
-    width: 110px;
-    height: 85px;
-  }
-  .desk-surface {
-    top: 4px;
-    left: 12px;
-    width: 86px;
-    height: 48px;
-    border-width: 2px;
-  }
-  .desk-surface::before {
-    top: 18px;
-    width: 50px;
-    height: 6px;
-    border-width: 1px;
-  }
-  .desk-surface::after {
-    width: 14px;
-    height: 10px;
-    right: -4px;
-    top: -2px;
-    border-width: 1px;
-  }
-  .desk-top {
-    top: 28px;
-    width: 60px;
-  }
-  .desk-monitor {
-    width: 48px;
-    height: 12px;
-    font-size: 6px;
-    border-width: 1px;
-  }
-  .desk-footer {
-    bottom: 8px;
-    width: 44px;
-    height: 12px;
-    border-width: 1px;
-  }
-  .desk-footer span {
-    font-size: 5px;
-  }
-
-  /* 保持背景元素显示但缩小 */
-  .window {
-    width: 65px;
-    height: 65px;
-    right: 15px;
     top: 35px;
-    border-width: 5px;
-  }
-  
-  /* 地板高度调整 */
-  .floor-left { top: 185px; }
-  .floor-right { top: 185px; }
-  .floor-divider { top: 185px; }
-  
-  /* 墙板与踢脚线 */
-  .wainscoting {
-    top: 130px;
-    height: 55px;
-  }
-  .baseboard {
-    top: 175px;
-  }
-
-  /* 缩小装饰，避免拥护 */
-  .deco-sofa {
-    left: 40%;
-    right: auto;
-    bottom: 10px;
-    font-size: 70px;
-  }
-  .deco-plant {
-    right: 5px;
-    bottom: 5px;
-    font-size: 18px;
-  }
-  .deco-boxes {
-    left: calc(50% + 10px);
-    bottom: 5px;
-    font-size: 14px;
-  }
-  
-  .wall-clock {
-    left: calc(50% - 70px);
-    top: 50px;
-    width: 32px;
-    height: 32px;
-    border-width: 3px;
-  }
-  .wall-clock::before { height: 8px; }
-  .wall-clock::after { height: 11px; }
-  
-  .framed-picture {
-    right: 110px;
-    top: 35px;
-    width: 45px;
-    height: 32px;
-    border-width: 3px;
-  }
-  
-  .center-rug {
-    left: calc(50% - 70px);
-    top: 215px;
-    width: 140px;
-    height: 65px;
-  }
-
-  /* 顶灯 */
-  .ceiling-lamp-wire { height: 24px; }
-  .ceiling-lamp-shade {
-    border-left-width: 8px;
-    border-right-width: 8px;
-    border-top-width: 12px;
-    top: 24px;
-  }
-  .ceiling-lamp-bulb { top: 36px; width: 5px; height: 5px; }
-  .lamp-glow {
-    width: 160px;
-    height: 240px;
-    left: calc(50% - 80px);
-    top: 30px;
   }
 
   /* 模态框字体和内边距深度优化 */
@@ -2774,6 +2580,80 @@ html, body {
   }
   .contact-link i {
     font-size: 16px;
+  }
+}
+@media (max-width: 480px) {
+  .deco-sofa {
+    left: 40%;
+    right: auto;
+    bottom: 10px;
+    font-size: 70px;
+  }
+  .deco-plant {
+    right: 5px;
+    bottom: 5px;
+    font-size: 18px;
+  }
+  .wall-clock {
+    left: calc(50% - 70px);
+    top: 50px;
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+  .wall-clock::before { height: 8px; }
+  .wall-clock::after { height: 11px; }
+  .framed-picture {
+    right: 110px;
+    top: 35px;
+    width: 45px;
+    height: 32px;
+    border-width: 3px;
+  }
+  .center-rug {
+    left: calc(50% - 70px);
+    top: 215px;
+    width: 140px;
+    height: 65px;
+  }
+  .deco-patent-scroll {
+    right: -12px;
+    top: 50px;
+    width: 28px;
+  }
+  .deco-patent-scroll .patent-rod {
+    left: -16px;
+    width: 28px;
+    height: 3px;
+    top: 5px;
+  }
+  .deco-patent-scroll .patent-rod::after {
+    right: -3px;
+    top: -1.5px;
+    width: 4px;
+    height: 4px;
+  }
+  .deco-patent-scroll .patent-thread {
+    height: 5px;
+    margin-top: 8px;
+    width: 1.5px;
+  }
+  .deco-patent-scroll .patent-emoji {
+    font-size: 28px;
+  }
+  .ceiling-lamp-wire { height: 24px; }
+  .ceiling-lamp-shade {
+    border-left-width: 8px;
+    border-right-width: 8px;
+    border-top-width: 12px;
+    top: 24px;
+  }
+  .ceiling-lamp-bulb { top: 36px; width: 5px; height: 5px; }
+  .lamp-glow {
+    width: 160px;
+    height: 240px;
+    left: calc(50% - 80px);
+    top: 30px;
   }
 }
 </style>
@@ -2840,8 +2720,8 @@ html, body {
         </div>
       </div>
 
-      <!-- 菜单项 4: 专利 → 黑板 -->
-      <div class="nav-item" data-target="patents" data-furniture="blackboard">
+      <!-- 菜单项 4: 专利 → 黑板右侧卷轴 -->
+      <div class="nav-item" data-target="patents" data-furniture="patent">
         <span class="nav-icon">📜</span>
         <span lang="zh">专利</span>
       </div>
@@ -2903,7 +2783,6 @@ html, body {
       <div class="window-cross-h"></div>
       <div class="window-cross-v"></div>
     </div>
-    <div class="light-beam"></div>
 
     <div class="floor-furniture">
 
@@ -2962,6 +2841,11 @@ html, body {
         <span class="plant-leaf plant-leaf-2"></span>
         <span class="plant-leaf plant-leaf-3"></span>
       </div>
+      <div class="deco-patent-scroll" id="furniture-patent">
+        <span class="patent-rod"></span>
+        <span class="patent-thread"></span>
+        <span class="patent-emoji">📜</span>
+      </div>
     </div>
 
     <!-- 家具 2: 书架 → 论文 -->
@@ -3003,16 +2887,6 @@ html, body {
 
     <div class="deco-sofa" id="furniture-sofa">
       🛋️
-      <div class="deco-shadow"></div>
-    </div>
-
-    <div class="deco-boxes">
-      <div class="box-stack">
-        <span>📦</span>
-      </div>
-      <div class="box-stack">
-        <span>📦</span><span>📦</span>
-      </div>
       <div class="deco-shadow"></div>
     </div>
 
@@ -3131,11 +3005,9 @@ html, body {
   }
 
   let furniturePositions = {};
-  let sceneRectCache = {};
 
   function updateFurniturePositions() {
     const sr = scene.getBoundingClientRect();
-    sceneRectCache = sr;
     const avatarW = 48, avatarH = 64;
 
     const blackboard = document.getElementById('furniture-blackboard');
@@ -3171,6 +3043,18 @@ html, body {
       furniturePositions.sofa = {
         x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
         y: r.top - sr.top + (r.height * 0.75) - (avatarH / 2)
+      };
+    }
+
+    const patent = document.getElementById('furniture-patent');
+    if (patent) {
+      const r = patent.getBoundingClientRect();
+      const bb = document.getElementById('furniture-blackboard');
+      const bbRect = bb && bb.getBoundingClientRect();
+      const floorY = bbRect ? bbRect.top - sr.top + bbRect.height + 12 : r.top - sr.top + r.height + 40;
+      furniturePositions.patent = {
+        x: r.left - sr.left + (r.width / 2) - (avatarW / 2),
+        y: floorY
       };
     }
 
@@ -3441,7 +3325,7 @@ html, body {
           '<div class="job-title" lang="zh">🔧 水泵机组的调度方法、装置、设备及介质</div>',
           '<div class="job-meta" lang="zh">发明人：周文慧, 党媛媛, <strong>谢奕彬</strong>等</div>',
           '<div class="job-meta" lang="zh">申请号：202510094842.6 [P]　|　<span style="color:var(--accent-gold);">状态：实质审查</span></div>',
-          '<div class="job-desc" lang="zh" style="margin-top:6px;">基于<strong>数优化调度优化方法<strong>，应用于<strong>粤海水务水网调度场景</strong>，可实现水压智能预测与泵站运行方案优化，显著提高供水效率并降低能耗。</div>',
+          '<div class="job-desc" lang="zh" style="margin-top:6px;">基于<strong>数学优化调度方法</strong>，应用于<strong>粤海水务水网调度场景</strong>，可实现水压智能预测与泵站运行方案优化，显著提高供水效率并降低能耗。</div>',
         '</div>',
 
         '<div class="job-entry">',
@@ -3456,31 +3340,6 @@ html, body {
           '<div class="job-meta" lang="zh">发明人：周文慧, 党媛媛, <strong>谢奕彬</strong></div>',
           '<div class="job-meta" lang="zh">申请号：202411990420.9 [P]　|　<span style="color:var(--accent-gold);">状态：实质审查</span></div>',
           '<div class="job-desc" lang="zh" style="margin-top:6px;">基于 <strong>Whisper 语音大模型</strong> 与 <strong>Qwen 文本推理模型</strong>，实现医患对话实时转写、病历结构化生成与医疗数据自动归档，应用于<strong>中山三院</strong>精神科 AIGC 系统。</div>',
-        '</div>'
-      ].join('')
-    },
-
-    coffee: {
-      title: '☕ 休息一下',
-      content: [
-        '<div style="text-align:center;margin-bottom:16px;">',
-          '<span style="font-size:64px;">☕</span>',
-          '<h3 style="font-size:13px;margin-top:8px;" lang="zh">博士生涯短暂休息</h3>',
-        '</div>',
-        '<div style="background:rgba(0,0,0,0.2);border:2px solid var(--ui-border);padding:16px;text-align:center;margin-bottom:12px;">',
-          '<p lang="zh" style="font-size:14px;color:var(--accent-gold);margin-bottom:8px;">「科研是一场马拉松，不是短跑冲刺」</p>',
-          '<p lang="zh" style="font-size:12px;color:var(--text-cream-dim);">停下来喝杯咖啡 ☕，才能走得更远 🚀</p>',
-        '</div>',
-        '<div class="job-entry">',
-          '<div class="job-title" lang="zh">☕ 今日咖啡状态</div>',
-          '<div class="job-desc" lang="zh">',
-            '<p>🥤 已消耗咖啡：<strong style="color:var(--accent-gold);">∞ 杯</strong></p>',
-            '<p>📝 论文写到第 <strong style="color:var(--accent-gold);">6</strong> 篇</p>',
-            '<p>💪 科研热情：<strong style="color:var(--accent-gold);">永远满格</strong></p>',
-          '</div>',
-        '</div>',
-        '<div style="margin-top:14px;padding:10px;background:rgba(0,0,0,0.2);border:2px solid var(--ui-border);text-align:center;">',
-          '<span style="font-size:10px;color:var(--accent-gold);" lang="zh">🎯 用数学建模，让世界更高效 — 但也要记得休息 😄</span>',
         '</div>'
       ].join('')
     },
@@ -3517,7 +3376,8 @@ html, body {
     blackboard: 'resume',
     bookshelf: 'projects',
     desk: 'contact',
-    sofa: 'coffee'
+    sofa: 'coffee',
+    patent: 'patents'
   };
 
   var isMovingHorizontal = false;
@@ -3605,7 +3465,7 @@ html, body {
   function findNearestFurniture() {
     var pos = getAvatarPos();
     var threshold = 65;
-    var furnitureKeys = ['blackboard', 'bookshelf', 'desk'];
+    var furnitureKeys = ['blackboard', 'bookshelf', 'desk', 'patent'];
     var nearest = null;
     var minDist = threshold;
 
@@ -3796,8 +3656,8 @@ html, body {
       return;
     }
     var furnitureEl = e.target.closest(
-      '#furniture-blackboard, #furniture-bookshelf, #furniture-desk, ' +
-      '.window, .deco-sofa, .deco-plant, .deco-boxes, ' +
+      '#furniture-blackboard, #furniture-bookshelf, #furniture-desk, #furniture-patent, ' +
+      '.window, .deco-sofa, .deco-plant, ' +
       '.wall-clock, .framed-picture, .center-rug'
     );
     if (furnitureEl) {
@@ -3806,13 +3666,15 @@ html, body {
       else if (furnitureEl.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
       else if (furnitureEl.id === 'furniture-desk') furnitureKey = 'desk';
       else if (furnitureEl.id === 'furniture-sofa') furnitureKey = 'sofa';
+      else if (furnitureEl.id === 'furniture-patent') furnitureKey = 'patent';
       if (!furnitureKey) {
-        var parent = furnitureEl.closest('#furniture-blackboard, #furniture-bookshelf, #furniture-desk, #furniture-sofa');
+        var parent = furnitureEl.closest('#furniture-blackboard, #furniture-bookshelf, #furniture-desk, #furniture-sofa, #furniture-patent');
         if (parent) {
           if (parent.id === 'furniture-blackboard') furnitureKey = 'blackboard';
           else if (parent.id === 'furniture-bookshelf') furnitureKey = 'bookshelf';
           else if (parent.id === 'furniture-desk') furnitureKey = 'desk';
           else if (parent.id === 'furniture-sofa') furnitureKey = 'sofa';
+          else if (parent.id === 'furniture-patent') furnitureKey = 'patent';
         }
       }
       if (furnitureKey) {
@@ -3886,6 +3748,5 @@ html, body {
 })();
 </script>
 <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0261de5ff6609e4',t:'MTc3OTg5NjQxMw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1954b47c125f43f8b4338b3c4f804e4f","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
